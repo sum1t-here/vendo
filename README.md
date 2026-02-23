@@ -76,6 +76,7 @@ vendo/
 ├── middleware.ts                     # Protects /account, /orders, /checkout
 ├── payload.config.ts
 ├── next.config.ts                    # withPayload wrapper
+├── docker-compose.yml                # Local Postgres + Adminer
 ├── .env
 └── .env.example
 ```
@@ -87,8 +88,8 @@ vendo/
 ### Prerequisites
 
 - [Bun](https://bun.sh) >= 1.0
-- [Node.js](https://nodejs.org) >= 18
-- PostgreSQL database — [Neon](https://neon.tech) recommended (free tier)
+- [Node.js](https://nodejs.org) >= 20.9
+- [Docker](https://www.docker.com) + Docker Compose
 - Stripe account
 
 ### 1. Clone and Install
@@ -99,7 +100,42 @@ cd vendo
 bun install
 ```
 
-### 2. Environment Variables
+### 2. Start Docker
+
+Vendo uses **PostgreSQL 17** via Docker. Adminer is included for database inspection.
+
+```bash
+docker compose up -d
+```
+
+| Service | URL | Description |
+|---|---|---|
+| PostgreSQL | `localhost:5432` | Main database |
+| Adminer | [http://localhost:8080](http://localhost:8080) | DB GUI |
+
+**Adminer login credentials:**
+
+```
+System:   PostgreSQL
+Server:   db
+Username: postgres
+Password: vendo
+Database: vendo
+```
+
+To stop the database:
+
+```bash
+docker compose down
+```
+
+To stop and wipe all data:
+
+```bash
+docker compose down -v
+```
+
+### 3. Environment Variables
 
 Create a `.env` file in the project root:
 
@@ -129,6 +165,7 @@ bun dev
 
 - Storefront → [http://localhost:3000](http://localhost:3000)
 - Admin dashboard → [http://localhost:3000/admin](http://localhost:3000/admin)
+- Database GUI → [http://localhost:8080](http://localhost:8080)
 
 On first run, Payload will auto-sync the database schema and prompt you to create your first admin user.
 
@@ -201,6 +238,19 @@ bun format:fix     # Auto-fix formatting with Prettier
 ---
 
 ## Deployment
+
+### Local vs Production Database
+
+| Environment | Database |
+|---|---|
+| Development | Docker (PostgreSQL 17) |
+| Production | [Neon](https://neon.tech) (serverless Postgres, free tier) |
+
+Switch your `DATABASE_URL` in production to your Neon connection string:
+
+```env
+DATABASE_URL=postgresql://user:password@host/vendo?sslmode=require
+```
 
 ### Vercel + Neon (Recommended)
 
