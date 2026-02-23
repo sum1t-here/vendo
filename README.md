@@ -147,6 +147,10 @@ DATABASE_URL=postgresql://user:password@host/vendo
 # Payload
 PAYLOAD_SECRET=your-long-random-secret-here
 
+# Resend
+RESEND_API_KEY=re_xxx
+RESEND_FROM_ADDRESS=your-email@example.com
+
 # Stripe
 STRIPE_SECRET_KEY=sk_test_xxx
 STRIPE_WEBHOOK_SECRET=whsec_xxx
@@ -273,8 +277,8 @@ bun run build
 - [x] Project setup — Next.js 15 + Payload CMS 3 + PostgreSQL
 - [x] Shadcn UI + Tailwind CSS 4 + Neobrutalism design system
 - [x] Dark mode with next-themes
-- [ ] Collections — Users, Products, Categories, Orders, Media
-- [ ] RBAC — admin and customer roles
+- [x] Collections — Users, Products, Categories, Orders, Media
+- [x] RBAC — admin and customer roles
 - [ ] Storefront — product listing and detail pages
 - [ ] Cart — Zustand with SSR-safe persistence
 - [ ] Stripe checkout + webhook order creation

@@ -138,6 +138,7 @@ export interface User {
   updatedAt: string;
   createdAt: string;
   email: string;
+  role: string;
   resetPasswordToken?: string | null;
   resetPasswordExpiration?: string | null;
   salt?: string | null;
