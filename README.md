@@ -31,6 +31,22 @@
 
 ---
 
+## ⚠️ Known Issues & Warnings
+
+`payload generate:types` requires `"type": "module"`
+The Payload CLI uses Node.js ESM resolution via `tsx`. Without `"type": "module"` in `package.json`, the CLI cannot resolve collection imports and throws `ERR_MODULE_NOT_FOUND`.
+
+```json
+// package.json — this is required
+{
+  "type": "module"
+}
+```
+
+Without this, `bunx payload generate:types` will fail even if all files exist.
+
+---
+
 ## Project Structure
 
 ```
