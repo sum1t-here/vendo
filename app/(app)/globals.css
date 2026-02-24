@@ -2,14 +2,20 @@
 @import 'tw-animate-css';
 @import 'shadcn/tailwind.css';
 
-@custom-variant dark (&:is(.dark *));
+/* @custom-variant dark (&:is(.dark *)); */
 
 :root {
-  --background: oklch(93.46% 0.0305 255.11);
-  --secondary-background: oklch(100% 0 0);
-  --foreground: oklch(0% 0 0);
-  --main-foreground: oklch(0% 0 0);
-  --main: oklch(67.47% 0.1726 259.49);
+  --background: #fff1c1;
+  --secondary-background: #ffffff;
+
+  --foreground: #000000;
+  --main-foreground: #000000;
+
+  --main: #e11d48; /* Primary */
+  --border: #000000;
+  --ring: #000000;
+
+  --overlay: rgba(0, 0, 0, 0.8);
   --border: oklch(0% 0 0);
   --ring: oklch(0% 0 0);
   --overlay: oklch(0% 0 0 / 0.8);
@@ -20,9 +26,12 @@
   --chart-4: #05e17a;
   --chart-5: #7a83ff;
   --chart-active-dot: #000;
+
+  --font-base: var(--font-body);
+  --font-heading: var(--font-heading);
 }
 
-.dark {
+/* .dark {
   --background: oklch(29.23% 0.0626 270.49);
   --secondary-background: oklch(23.93% 0 0);
   --foreground: oklch(92.49% 0 0);
@@ -37,7 +46,7 @@
   --chart-4: #04c86d;
   --chart-5: #7a83ff;
   --chart-active-dot: #fff;
-}
+} */
 
 @theme inline {
   --color-main: var(--main);

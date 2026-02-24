@@ -295,7 +295,7 @@ bun run build
 - [x] Dark mode with next-themes
 - [x] Collections — Users, Products, Categories, Orders, Media
 - [x] RBAC — admin and customer roles
-- [ ] Storefront — product listing and detail pages
+- [x] Storefront — product listing and detail pages
 - [ ] Cart — Zustand with SSR-safe persistence
 - [ ] Stripe checkout + webhook order creation
 - [ ] Protected routes via middleware

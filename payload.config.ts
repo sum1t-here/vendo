@@ -7,10 +7,9 @@ import { Products } from './collections/Products';
 import { Categories } from './collections/Categories';
 import { Media } from './collections/Media';
 import { Orders } from './collections/Orders';
-import { Users }  from './collections/Users';
+import { Users } from './collections/Users';
 
 export default buildConfig({
-
   // admin panel
   admin: {
     user: Users.slug,
@@ -29,12 +28,12 @@ export default buildConfig({
     },
   }),
 
-// email
-    email: resendAdapter({
-        apiKey: process.env.RESEND_API_KEY!,
-        defaultFromAddress: process.env.RESEND_FROM_ADDRESS!,
-        defaultFromName: "Vendo",
-    }),
+  // email
+  email: resendAdapter({
+    apiKey: process.env.RESEND_API_KEY!,
+    defaultFromAddress: process.env.RESEND_FROM_ADDRESS!,
+    defaultFromName: 'Vendo',
+  }),
 
   // editor
   editor: lexicalEditor({}),
