@@ -1,5 +1,5 @@
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
+import { Button } from './ui/button';
+import { Input } from './ui/input';
 
 export default function Footer() {
   return (
@@ -43,15 +43,9 @@ export default function Footer() {
           <h3 className="font-bold uppercase text-sm tracking-wide">Stay Updated</h3>
 
           <div className="flex gap-1">
-            <Input
-              type="email"
-              placeholder="Email"
-              className="focus-visible:ring-0"
-            />
+            <Input type="email" placeholder="Email" className="focus-visible:ring-0" />
 
-            <Button className="cursor-pointer">
-              Join
-            </Button>
+            <Button className="cursor-pointer">Join</Button>
           </div>
         </div>
       </div>
@@ -72,7 +66,7 @@ export default function Footer() {
         "
       >
         <span>© {new Date().getFullYear()} Vendo</span>
-        <span className="uppercase tracking-wide">Built Bold</span>
+        <span className="uppercase tracking-wide">Built Bold by <span className="text-primary">Sumit Mazumdar</span></span>
       </div>
     </footer>
   );

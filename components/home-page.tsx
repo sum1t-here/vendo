@@ -24,7 +24,7 @@ export default function HomePage() {
           </p>
           <p className="md:text-xl text-[10px] font-light">everyday enjoyable</p>
           <div className="mt-12">
-            <Button className="text-xs md:text-base cursor-pointer">
+            <Button className="text-xs md:text-base cursor-pointer" variant="neutral">
               {' '}
               EXPLORE PRODUCT{' '}
               <div>
@@ -43,7 +43,7 @@ export default function HomePage() {
             <h1 className="text-[27px] md:text-4xl">
               Where dream <br /> meets couture
             </h1>
-            <Button className="text-xs md:text-base cursor-pointer"> Shop Now </Button>
+            <Button className="text-xs md:text-base cursor-pointer" variant="neutral"> Shop Now </Button>
           </div>
         </div>
         <div className="w-full bg-[#FDEBD2] h-48 relative rounded-xl shadow-[6px_6px_0px_#000]">
@@ -54,7 +54,7 @@ export default function HomePage() {
               Enchanting styles <br />
               for every season
             </h1>
-            <Button className="text-xs md:text-base cursor-pointer"> Shop Now </Button>
+            <Button className="text-xs md:text-base cursor-pointer" variant="neutral"> Shop Now </Button>
           </div>
         </div>
       </div>

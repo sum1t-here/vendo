@@ -132,12 +132,12 @@ export interface User {
   /**
    * Admin has access to full cms access. Customer has storefront access only
    */
-  role: 'admin' | 'customer';
-  address: {
-    street: string;
-    city: string;
-    state: string;
-    zip: string;
+  role?: ('admin' | 'customer') | null;
+  address?: {
+    street?: string | null;
+    city?: string | null;
+    state?: string | null;
+    zip?: string | null;
   };
   /**
    * Stripe customer ID. Auto created on first checkout
@@ -717,6 +717,7 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
 export interface Auth {
   [k: string]: unknown;
 }
+
 
 declare module 'payload' {
   export interface GeneratedTypes extends Config {}

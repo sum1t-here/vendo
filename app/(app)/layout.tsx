@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Inter, Space_Grotesk } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '../../components/theme-providers';
-import Header from '@/components/header';
+import Header from '@/components/header-container';
 import Footer from '@/components/footer';
 
 const spaceGrotesk = Space_Grotesk({
@@ -32,7 +32,7 @@ export default function RootLayout({
       <body className={`${spaceGrotesk.variable} ${bodyFont.variable} antialiased flex flex-col min-h-screen`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <Header />
-          <main className="flex-1">{children}</main>
+          <main className="flex-1 min-h-screen">{children}</main>
           <Footer />
         </ThemeProvider>
       </body>

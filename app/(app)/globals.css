@@ -87,3 +87,17 @@
     @apply font-heading;
   }
 }
+
+::-webkit-scrollbar {
+  width: 14px;
+}
+
+::-webkit-scrollbar-track {
+  background: white;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-main);
+  border-radius: 7px;
+  border: 3px solid black;
+}

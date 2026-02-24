@@ -37,7 +37,7 @@ export const Media: CollectionConfig = {
     ],
     adminThumbnail: 'thumbnail',
 
-    mimeTypes: ['image/jpeg', 'image/png', 'image/webp'],
+    mimeTypes: ['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml', 'image/avif', 'image/gif', 'image/bmp', 'image/tiff', 'image/ico', 'image/apng'],
   },
 
   admin: {

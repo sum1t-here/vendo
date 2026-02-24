@@ -64,7 +64,6 @@ export const Users: CollectionConfig = {
     {
       name: 'role',
       type: 'select',
-      required: true,
       defaultValue: 'customer',
       options: [
         { label: 'Admin', value: 'admin' },
@@ -75,6 +74,7 @@ export const Users: CollectionConfig = {
       // Even if a customer sends { role: 'admin' } in a PATCH request,
       // Payload will ignore this field update entirely.
       access: {
+        create: () => false,
         update: ({ req }) => req.user?.role === 'admin',
       },
       admin: {
@@ -91,22 +91,22 @@ export const Users: CollectionConfig = {
         {
           name: 'street',
           type: 'text',
-          required: true,
+          // required: true,
         },
         {
           name: 'city',
           type: 'text',
-          required: true,
+          // required: true,
         },
         {
           name: 'state',
           type: 'text',
-          required: true,
+          // required: true,
         },
         {
           name: 'zip',
           type: 'text',
-          required: true,
+          // required: true,
         },
       ],
     },
