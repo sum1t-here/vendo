@@ -11,33 +11,44 @@ export const Media: CollectionConfig = {
   slug: 'media',
   // staticDir is the directory where the files will be stored
   upload: {
-    staticDir: 'public/uploads',
-    imageSizes: [
-      {
-        name: 'thumbnail',
-        width: 300,
-        height: 300,
-        position: 'centre',
-        withoutEnlargement: true,
-      },
-      {
-        name: 'card',
-        width: 600,
-        height: 600,
-        position: 'centre',
-        withoutEnlargement: true,
-      },
-      {
-        name: 'feature',
-        width: 1200,
-        height: 900,
-        position: 'centre',
-        withoutEnlargement: true,
-      },
-    ],
+    // staticDir: 'public/uploads',
+    // imageSizes: [
+    //   {
+    //     name: 'thumbnail',
+    //     width: 300,
+    //     height: 300,
+    //     position: 'centre',
+    //     withoutEnlargement: true,
+    //   },
+    //   {
+    //     name: 'card',
+    //     width: 600,
+    //     height: 600,
+    //     position: 'centre',
+    //     withoutEnlargement: true,
+    //   },
+    //   {
+    //     name: 'feature',
+    //     width: 1200,
+    //     height: 900,
+    //     position: 'centre',
+    //     withoutEnlargement: true,
+    //   },
+    // ],
     adminThumbnail: 'thumbnail',
 
-    mimeTypes: ['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml', 'image/avif', 'image/gif', 'image/bmp', 'image/tiff', 'image/ico', 'image/apng'],
+    mimeTypes: [
+      'image/jpeg',
+      'image/png',
+      'image/webp',
+      'image/svg+xml',
+      'image/avif',
+      'image/gif',
+      'image/bmp',
+      'image/tiff',
+      'image/ico',
+      'image/apng',
+    ],
   },
 
   admin: {

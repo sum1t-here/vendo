@@ -8,6 +8,8 @@ import { Categories } from './collections/Categories';
 import { Media } from './collections/Media';
 import { Orders } from './collections/Orders';
 import { Users } from './collections/Users';
+import { cloudStoragePlugin } from '@payloadcms/plugin-cloud-storage';
+import { cloudinaryAdapter, cloudinary } from './lib/cloudinary';
 
 export default buildConfig({
   // admin panel
@@ -40,4 +42,16 @@ export default buildConfig({
 
   // image processing
   sharp,
+
+  plugins: [
+    cloudStoragePlugin({
+      collections: {
+        media: {
+          adapter: cloudinaryAdapter,
+          disableLocalStorage: true,
+          generateFileURL: ({ filename }) => cloudinary.url(`vendo/${filename}`, { secure: true }),
+        },
+      },
+    }),
+  ],
 });

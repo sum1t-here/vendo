@@ -55,12 +55,24 @@ export default function RegisterForm() {
   return (
     <div className="flex flex-col justify-center items-center mt-[100px] gap-3">
       <HeaderLabel text="Register" />
-      <form onSubmit={handleSubmit} className="bg-secondary-background w-[300px] md:w-[450px] p-3 flex flex-col gap-3 rounded-md border shadow-[6px_6px_0px_#000]">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-secondary-background w-[300px] md:w-[450px] p-3 flex flex-col gap-3 rounded-md border shadow-[6px_6px_0px_#000]"
+      >
         <div className="flex flex-col gap-1">
           <Label htmlFor="name" className="text-sm font-semibold">
             Name
           </Label>
-          <Input type="text" name="name" value={user.name} onChange={handleChange} placeholder="Name" minLength={5} maxLength={20} required />
+          <Input
+            type="text"
+            name="name"
+            value={user.name}
+            onChange={handleChange}
+            placeholder="Name"
+            minLength={5}
+            maxLength={20}
+            required
+          />
         </div>
         <div className="flex flex-col gap-1">
           <Label htmlFor="email" className="text-sm font-semibold">
@@ -72,20 +84,39 @@ export default function RegisterForm() {
           <Label htmlFor="password" className="text-sm font-semibold">
             Password
           </Label>
-          <Input type="password" name="password" value={user.password} onChange={handleChange} placeholder="Password" required minLength={6} />
+          <Input
+            type="password"
+            name="password"
+            value={user.password}
+            onChange={handleChange}
+            placeholder="Password"
+            required
+            minLength={6}
+          />
         </div>
         <div className="flex flex-col gap-1">
           <Label htmlFor="confirmPassword" className="text-sm font-semibold">
             Confirm Password
           </Label>
-          <Input type="password" name="confirmPassword" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Confirm Password" required minLength={6} />
+          <Input
+            type="password"
+            name="confirmPassword"
+            value={confirmPassword}
+            onChange={e => setConfirmPassword(e.target.value)}
+            placeholder="Confirm Password"
+            required
+            minLength={6}
+          />
         </div>
         {error && <p className="text-red-500 text-sm text-center">{error}</p>}
-        <Button type='submit' disabled={loading} className="cursor-pointer">
+        <Button type="submit" disabled={loading} className="cursor-pointer">
           {loading ? 'Registering...' : 'Register'}
         </Button>
         <p className="text-center text-sm">
-          Already have an account? <Link href="/login" className="text-blue-500 hover:underline">Login</Link>
+          Already have an account?{' '}
+          <Link href="/login" className="text-blue-500 hover:underline">
+            Login
+          </Link>
         </p>
       </form>
     </div>

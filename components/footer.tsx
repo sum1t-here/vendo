@@ -66,7 +66,9 @@ export default function Footer() {
         "
       >
         <span>© {new Date().getFullYear()} Vendo</span>
-        <span className="uppercase tracking-wide">Built Bold by <span className="text-primary">Sumit Mazumdar</span></span>
+        <span className="uppercase tracking-wide">
+          Built Bold by <span className="text-primary">Sumit Mazumdar</span>
+        </span>
       </div>
     </footer>
   );

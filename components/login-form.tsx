@@ -49,7 +49,10 @@ export default function LoginForm() {
   return (
     <div className="flex flex-col justify-center items-center mt-[100px] gap-3">
       <HeaderLabel text="Login" />
-      <form onSubmit={handleSubmit} className="bg-secondary-background w-[300px] md:w-[450px] p-3 flex flex-col gap-3 rounded-md border shadow-[6px_6px_0px_#000]">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-secondary-background w-[300px] md:w-[450px] p-3 flex flex-col gap-3 rounded-md border shadow-[6px_6px_0px_#000]"
+      >
         <div className="flex flex-col gap-1">
           <Label htmlFor="email" className="text-sm font-semibold">
             Email
@@ -63,11 +66,14 @@ export default function LoginForm() {
           <Input type="password" name="password" value={user.password} onChange={handleChange} placeholder="Password" />
         </div>
         {error && <p className="text-red-500 text-sm text-center">{error}</p>}
-        <Button type='submit' disabled={loading} className="cursor-pointer">
+        <Button type="submit" disabled={loading} className="cursor-pointer">
           {loading ? 'Logging in...' : 'Login'}
         </Button>
         <p className="text-center text-sm">
-          Don't have an account? <Link href="/register" className="text-blue-500 hover:underline">Register</Link>
+          Don't have an account?{' '}
+          <Link href="/register" className="text-blue-500 hover:underline">
+            Register
+          </Link>
         </p>
       </form>
     </div>
