@@ -1,3 +1,4 @@
+import { discountPercent } from '@/lib/discount';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -8,10 +9,10 @@ interface ProductCardProps {
 
 export default function ProductCard({ product }: ProductCardProps) {
   const imageUrl = product.image?.[0]?.imageUrl?.url;
-  const hasDiscount = product.comparePrice && product.comparePrice > product.price;
-  const discountPercent = hasDiscount
-    ? Math.round(((product.comparePrice - product.price) / product.comparePrice) * 100)
-    : null;
+  let discountPercentNumber = 0;
+  if (product.comparePrice && product.comparePrice > product.price) {
+    discountPercentNumber = Number(discountPercent(product.comparePrice, product.price));
+  }
 
   return (
     <Link
@@ -33,9 +34,9 @@ export default function ProductCard({ product }: ProductCardProps) {
         )}
 
         {/* Discount badge */}
-        {discountPercent && (
+        {discountPercentNumber && (
           <span className="absolute top-2 left-2 bg-black text-white text-xs font-black px-2 py-1 border border-white">
-            -{discountPercent}%
+            -{discountPercentNumber}%
           </span>
         )}
       </div>
@@ -48,7 +49,9 @@ export default function ProductCard({ product }: ProductCardProps) {
         <h3 className="font-black text-sm leading-tight truncate">{product.name}</h3>
         <div className="flex items-center gap-2 mt-1">
           <span className="font-black text-lg">₹{product.price}</span>
-          {hasDiscount && <span className="text-xs line-through text-muted-foreground">₹{product.comparePrice}</span>}
+          {discountPercentNumber && (
+            <span className="text-xs line-through text-muted-foreground">₹{product.comparePrice}</span>
+          )}
         </div>
       </div>
     </Link>

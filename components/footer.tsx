@@ -1,5 +1,6 @@
 import { Button } from './ui/button';
 import { Input } from './ui/input';
+import Link from 'next/link';
 
 export default function Footer() {
   return (
@@ -19,12 +20,18 @@ export default function Footer() {
         </div>
 
         {/* Shop */}
-        <div className="space-y-4">
+        <div>
           <h3 className="font-bold uppercase text-sm tracking-wide">Shop</h3>
           <ul className="space-y-2 font-semibold text-sm">
-            <li className="hover:underline cursor-pointer">Men</li>
-            <li className="hover:underline cursor-pointer">Women</li>
-            <li className="hover:underline cursor-pointer">Accessories</li>
+            <Link href="/products/category/men">
+              <li className="hover:underline cursor-pointer">Men</li>
+            </Link>
+            <Link href="/products/category/women">
+              <li className="hover:underline cursor-pointer">Women</li>
+            </Link>
+            <Link href="/products/category/unisex">
+              <li className="hover:underline cursor-pointer">Unisex</li>
+            </Link>
           </ul>
         </div>
 

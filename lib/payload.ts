@@ -89,3 +89,19 @@ export async function getProductsByCategory(slug: string) {
 
   return products;
 }
+
+export async function getFeaturedProducts() {
+  const payload = await getPayload({ config });
+
+  const { docs } = await payload.find({
+    collection: 'products',
+    where: {
+      featured: {
+        equals: true,
+      },
+    },
+    depth: 2,
+  });
+
+  return docs;
+}

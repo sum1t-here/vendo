@@ -1,6 +1,6 @@
-import ProductPage from '@/components/product-page';
+import ProductCategoryPage from '@/components/product-category-page';
 
 export default async function ProductsPage({ params }: { params: Promise<{ category: string }> }) {
   const { category } = await params;
-  return <ProductPage category={category} />;
+  return <ProductCategoryPage category={category} />;
 }

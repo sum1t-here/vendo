@@ -6,8 +6,11 @@ interface Props {
   category: string;
 }
 
-export default async function ProductsPage({ category }: Props) {
+export default async function ProductCategoryPage({ category }: Props) {
   const products = await getProductsByCategory(category);
+
+  console.log(category);
+  console.log(products);
 
   if (products.length === 0) {
     return <DroppingSoon />;

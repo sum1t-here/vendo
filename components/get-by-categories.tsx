@@ -36,7 +36,7 @@ export default async function GetByCategories() {
           if (!config) return null;
 
           return (
-            <Link href={`/products/${category.slug}`} key={category.id} className="w-full">
+            <Link href={`/products/category/${category.slug}`} key={category.id} className="w-full">
               <CategoryCard config={config} />
             </Link>
           );
