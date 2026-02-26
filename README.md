@@ -27,6 +27,9 @@
   <img src="https://img.shields.io/badge/Prettier-F7B93E?style=for-the-badge&logo=prettier&logoColor=black" />
   <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" />
   <img src="https://img.shields.io/badge/Neon-00E699?style=for-the-badge&logo=neon&logoColor=black" />
+  <img src="https://img.shields.io/badge/Cloudinary-000000?style=for-the-badge&logo=cloudinary&logoColor=white" />
+  <img src="https://img.shields.io/badge/Resend-000000?style=for-the-badge&logo=resend&logoColor=white" />
+  <img src="https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white" />
 </p>
 
 ---
@@ -44,59 +47,6 @@ The Payload CLI uses Node.js ESM resolution via `tsx`. Without `"type": "module"
 ```
 
 Without this, `bunx payload generate:types` will fail even if all files exist.
-
----
-
-## Project Structure
-
-```
-vendo/
-├── app/
-│   ├── (app)/                        # Customer-facing storefront
-│   │   ├── layout.tsx
-│   │   ├── page.tsx                  # Homepage
-│   │   ├── products/
-│   │   │   ├── page.tsx              # Product listing
-│   │   │   └── [slug]/page.tsx       # Product detail
-│   │   ├── cart/page.tsx
-│   │   ├── checkout/page.tsx
-│   │   ├── login/page.tsx
-│   │   ├── register/page.tsx
-│   │   └── account/page.tsx          # Protected route
-│   ├── (payload)/                    # Payload CMS internal routes
-│   │   ├── admin/[[...segments]]/    # Admin dashboard at /admin
-│   │   │   ├── page.tsx
-│   │   │   └── not-found.tsx
-│   │   ├── api/[...slug]/route.ts    # Payload REST API
-│   │   └── importMap.ts
-│   ├── api/
-│   │   ├── checkout/route.ts         # Stripe checkout session
-│   │   └── webhooks/stripe/route.ts  # Stripe webhook handler
-│   ├── globals.css
-│   └── layout.tsx                    # Root layout
-├── collections/
-│   ├── Users.ts                      # Auth + RBAC (admin / customer)
-│   ├── Products.ts                   # Admin-only CRUD
-│   ├── Categories.ts
-│   ├── Orders.ts                     # Scoped by user role
-│   └── Media.ts                      # File uploads
-├── components/
-│   ├── Navbar.tsx
-│   ├── ProductCard.tsx
-│   ├── CartDrawer.tsx
-│   └── ThemeToggle.tsx
-├── store/
-│   └── cartStore.ts                  # Zustand cart (SSR-safe)
-├── lib/
-│   ├── payload.ts                    # Payload client helper
-│   └── stripe.ts
-├── middleware.ts                     # Protects /account, /orders, /checkout
-├── payload.config.ts
-├── next.config.ts                    # withPayload wrapper
-├── docker-compose.yml                # Local Postgres + Adminer
-├── .env
-└── .env.example
-```
 
 ---
 
@@ -171,6 +121,11 @@ RESEND_FROM_ADDRESS=your-email@example.com
 STRIPE_SECRET_KEY=sk_test_xxx
 STRIPE_WEBHOOK_SECRET=whsec_xxx
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_xxx
+
+# Cloudinary
+CLOUDINARY_CLOUD_NAME=your-cloudinary-cloud-name
+CLOUDINARY_API_KEY=your-cloudinary-api-key
+CLOUDINARY_API_SECRET=your-cloudinary-api-secret
 
 # App
 NEXT_PUBLIC_URL=http://localhost:3000
@@ -296,10 +251,10 @@ bun run build
 - [x] Collections — Users, Products, Categories, Orders, Media
 - [x] RBAC — admin and customer roles
 - [x] Storefront — product listing and detail pages
-- [ ] Cart — Zustand with SSR-safe persistence
-- [ ] Stripe checkout + webhook order creation
-- [ ] Protected routes via middleware
-- [ ] Deploy to Vercel
+- [x] Cart — Zustand with SSR-safe persistence
+- [x] Stripe checkout + webhook order creation
+- [x] Protected routes via middleware
+- [x] Deploy to Vercel
 
 ---
 
