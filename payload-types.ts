@@ -244,6 +244,10 @@ export interface Product {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Featured product
+   */
+  featured?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -282,10 +286,6 @@ export interface Category {
    * Category image
    */
   image?: (number | null) | Media;
-  /**
-   * Featured category
-   */
-  featured?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -539,6 +539,7 @@ export interface ProductsSelect<T extends boolean = true> {
         stock?: T;
         id?: T;
       };
+  featured?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -551,7 +552,6 @@ export interface CategoriesSelect<T extends boolean = true> {
   slug?: T;
   description?: T;
   image?: T;
-  featured?: T;
   updatedAt?: T;
   createdAt?: T;
 }

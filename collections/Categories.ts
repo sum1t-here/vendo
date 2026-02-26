@@ -60,15 +60,6 @@ export const Categories: CollectionConfig = {
         description: 'Category image',
       },
     },
-    {
-      name: 'featured',
-      type: 'checkbox',
-      defaultValue: false,
-      admin: {
-        position: 'sidebar',
-        description: 'Featured category',
-      },
-    },
   ],
   timestamps: true,
 };

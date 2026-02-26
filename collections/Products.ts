@@ -177,6 +177,15 @@ export const Products: CollectionConfig = {
         },
       ],
     },
+    {
+      name: 'featured',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: {
+        position: 'sidebar',
+        description: 'Featured product',
+      },
+    },
   ],
   timestamps: true,
 };
