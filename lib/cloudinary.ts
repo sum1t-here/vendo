@@ -18,7 +18,7 @@ export const cloudinaryAdapter = () => ({
             folder: 'vendo',
             public_id: file.filename.replace(/(\.[^/.]+)+$/, ''),
             use_filename: false,
-            overwrite: false
+            overwrite: false,
           },
           (error, result) => {
             if (error) return reject(error);
@@ -39,14 +39,13 @@ export const cloudinaryAdapter = () => ({
 
   async handleDelete({ filename }: Parameters<HandleDelete>[0]) {
     try {
-      
-    // filename is now the full URL, extract public_id from it
+      // filename is now the full URL, extract public_id from it
       const publicId = filename
-        .split('/upload/')[1]          // get everything after /upload/
-        .replace(/v\d+\//, '')         // remove version like v1772020318/
-        .replace(/\.[^/.]+$/, '')      // remove file extension
+        .split('/upload/')[1] // get everything after /upload/
+        .replace(/v\d+\//, '') // remove version like v1772020318/
+        .replace(/\.[^/.]+$/, ''); // remove file extension
 
-      await cloudinary.uploader.destroy(publicId)
+      await cloudinary.uploader.destroy(publicId);
     } catch (error) {
       console.log('Cloudinary delete error :', error);
     }
