@@ -1,11 +1,12 @@
-import Image from "next/image";
-import Link from "next/link";
+import Image from 'next/image';
+import Link from 'next/link';
 
-interface Props {
+interface ProductCardProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   product: any;
 }
 
-export default function ProductCard({ product }: Props) {
+export default function ProductCard({ product }: ProductCardProps) {
   const imageUrl = product.image?.[0]?.imageUrl?.url;
   const hasDiscount = product.comparePrice && product.comparePrice > product.price;
   const discountPercent = hasDiscount
@@ -28,9 +29,7 @@ export default function ProductCard({ product }: Props) {
             className="object-cover group-hover:scale-105 transition-transform duration-300"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-muted-foreground text-sm">
-            No image
-          </div>
+          <div className="w-full h-full flex items-center justify-center text-muted-foreground text-sm">No image</div>
         )}
 
         {/* Discount badge */}
@@ -49,13 +48,9 @@ export default function ProductCard({ product }: Props) {
         <h3 className="font-black text-sm leading-tight truncate">{product.name}</h3>
         <div className="flex items-center gap-2 mt-1">
           <span className="font-black text-lg">₹{product.price}</span>
-          {hasDiscount && (
-            <span className="text-xs line-through text-muted-foreground">
-              ₹{product.comparePrice}
-            </span>
-          )}
+          {hasDiscount && <span className="text-xs line-through text-muted-foreground">₹{product.comparePrice}</span>}
         </div>
       </div>
     </Link>
   );
-}   
+}
