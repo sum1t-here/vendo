@@ -202,9 +202,9 @@ export interface Product {
    */
   comparePrice?: number | null;
   /**
-   * Number of items available in stock
+   * Number of items available in stock. Ignore this if you have variants.
    */
-  stock: number;
+  stock?: number | null;
   /**
    * Category of the product
    */

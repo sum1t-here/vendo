@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from './ui/carousel';
 import { Button } from './ui/button';
 import { discountPercent } from '@/lib/discount';
+import { getProductStock, isInStock } from '@/lib/stock';
 
 interface ProductDetailProps {
   product: any;
@@ -108,13 +109,18 @@ export default function ProductDetail({ product }: ProductDetailProps) {
             ))}
 
           {/* Stock */}
-          <p className={`text-sm font-bold ${product.stock === 0 ? 'text-red-500' : 'text-green-600'}`}>
+          {/* <p className={`text-sm font-bold ${product.stock === 0 ? 'text-red-500' : 'text-green-600'}`}>
             {product.stock === 0 ? 'Out of stock' : `${product.stock} in stock`}
+          </p> */}
+          <p
+            className={`text-sm font-bold ${isInStock(product, selectedVariant?.id) ? 'text-green-600' : 'text-red-500'}`}
+          >
+            {isInStock(product, selectedVariant?.id) ? `${getProductStock(product)} in stock` : 'Out of stock'}
           </p>
 
           {/* Add to cart */}
           <Button
-            disabled={product.stock === 0}
+            disabled={!isInStock(product, selectedVariant?.id)}
             className="w-full border-2 border-black bg-black text-white font-black py-6 text-base shadow-[4px_4px_0px_#555] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {product.stock === 0 ? 'Out of Stock' : 'Add to Cart →'}
