@@ -7,6 +7,8 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import { Button } from './ui/button';
 import { discountPercent } from '@/lib/discount';
 import { getProductStock, isInStock } from '@/lib/stock';
+import { useCartStore } from '@/store/cart';
+import { toast } from 'sonner';
 
 interface ProductDetailProps {
   product: any;
@@ -14,6 +16,7 @@ interface ProductDetailProps {
 
 export default function ProductDetail({ product }: ProductDetailProps) {
   const [selectedVariant, setSelectedVariant] = useState<any>(null);
+  const addItem = useCartStore(state => state.addToCart);
 
   if (!product) return null;
 
@@ -26,6 +29,18 @@ export default function ProductDetail({ product }: ProductDetailProps) {
     return acc;
   }, {});
 
+  const handleAddToCart = () => {
+    addItem({
+      id: product.id,
+      name: product.name,
+      price: price,
+      image: product.image[0].imageUrl.url,
+      slug: product.slug,
+      quantity: 1,
+      variantId: selectedVariant?.id,
+      variantValue: selectedVariant?.value,
+    });
+  };
   return (
     <div className="pt-7 px-4 md:px-14 min-h-screen w-full flex items-center justify-center">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-14 w-full">
@@ -122,6 +137,10 @@ export default function ProductDetail({ product }: ProductDetailProps) {
           <Button
             disabled={!isInStock(product, selectedVariant?.id)}
             className="w-full border-2 border-black bg-black text-white font-black py-6 text-base shadow-[4px_4px_0px_#555] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={() => {
+              handleAddToCart();
+              toast.success('Item added to cart');
+            }}
           >
             {product.stock === 0 ? 'Out of Stock' : 'Add to Cart →'}
           </Button>

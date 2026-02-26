@@ -16,9 +16,24 @@ import { Menu, ShoppingCartIcon, User as UserIcon } from 'lucide-react';
 import { Button } from './ui/button';
 import { useRouter } from 'next/navigation';
 import { User } from '@/payload-types';
+import { useCartStore } from '@/store/cart';
+import { motion, useAnimation } from 'motion/react';
+import { useEffect } from 'react';
 
 export default function HeaderPresenter({ user }: { user: User | null }) {
   const router = useRouter();
+  const control = useAnimation();
+  const totalItems = useCartStore(state => state.totalItems());
+
+  useEffect(() => {
+    if (totalItems > 0) {
+      control.start({
+        scale: [1, 1.4, 1],
+        transition: { duration: 0.8, ease: 'easeInOut' },
+      });
+    }
+  }, [totalItems, control]);
+
   const handleLogout = async () => {
     await fetch('/api/users/logout', {
       method: 'POST',
@@ -26,6 +41,7 @@ export default function HeaderPresenter({ user }: { user: User | null }) {
     router.push('/');
     router.refresh();
   };
+
   return (
     <header className="bg-secondary-background w-full h-14 flex items-center justify-between px-4 md:px-14 shadow-[0_6px_0px_#000]">
       {/* Mobile Navigation */}
@@ -173,7 +189,26 @@ export default function HeaderPresenter({ user }: { user: User | null }) {
           </DropdownMenu>
         </div>
         <div>
-          <ShoppingCartIcon />
+          <Link href="/cart">
+            <motion.div
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              animate={control}
+              className="relative group"
+            >
+              <ShoppingCartIcon />
+              {totalItems > 0 && (
+                <motion.span
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: 'spring', stiffness: 500, damping: 20 }}
+                  className="absolute -top-2 -right-2 min-w-[22px] h-[22px] px-1 flex items-center justify-center text-[10px] font-black bg-yellow-300 text-black border-2 border-black shadow-[2px_2px_0px_#000] transition-all group-hover:translate-y-[2px] group-hover:translate-x-[-2px] group-hover:rotate-6"
+                >
+                  {totalItems}
+                </motion.span>
+              )}
+            </motion.div>
+          </Link>
         </div>
       </div>
     </header>

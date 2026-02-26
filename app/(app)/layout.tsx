@@ -4,6 +4,7 @@ import './globals.css';
 import { ThemeProvider } from '../../components/theme-providers';
 import Header from '@/components/header-container';
 import Footer from '@/components/footer';
+import { Toaster } from '@/components/ui/sonner';
 
 const spaceGrotesk = Space_Grotesk({
   weight: ['400', '500', '600', '700'],
@@ -33,6 +34,7 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <Header />
           <main className="flex-1 min-h-screen">{children}</main>
+          <Toaster />
           <Footer />
         </ThemeProvider>
       </body>
