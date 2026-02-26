@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
 import { Label } from './ui/label';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import HeaderLabel from './header-label';
 
@@ -15,7 +14,7 @@ export default function LoginForm() {
   });
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
+  const [success, setSuccess] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -26,6 +25,7 @@ export default function LoginForm() {
     e.preventDefault();
     setLoading(true);
     setError(null);
+    setSuccess(null);
     try {
       const response = await fetch('/api/users/login', {
         method: 'POST',
@@ -35,10 +35,8 @@ export default function LoginForm() {
       const data = await response.json();
       if (!response.ok) {
         setError(data.message);
-      } else {
-        router.push('/');
-        router.refresh();
       }
+      setSuccess('Login successful');
     } catch (error) {
       console.error('Login error:', error);
       setError('An error occurred during login');
@@ -75,6 +73,21 @@ export default function LoginForm() {
             Register
           </Link>
         </p>
+        <p className="text-center text-sm">OR</p>
+        <div className="flex justify-center items-center gap-2">
+          <Link href="/forgot-password" className="text-blue-500 hover:underline text-sm">
+            Forgot Password
+          </Link>
+        </div>
+
+        {success && (
+          <div className="text-green-500 text-sm text-center flex flex-col items-center gap-2 justify-center">
+            <span className="text-sm">{success}</span>
+            <Link href="/login" className="text-blue-500 hover:underline">
+              <Button className="text-sm cursor-pointer"> Back to Login </Button>
+            </Link>
+          </div>
+        )}
       </form>
     </div>
   );

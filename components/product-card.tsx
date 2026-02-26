@@ -49,7 +49,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         <h3 className="font-black text-sm leading-tight truncate">{product.name}</h3>
         <div className="flex items-center gap-2 mt-1">
           <span className="font-black text-lg">₹{product.price}</span>
-          {discountPercentNumber && (
+          {discountPercentNumber > 0 && (
             <span className="text-xs line-through text-muted-foreground">₹{product.comparePrice}</span>
           )}
         </div>
