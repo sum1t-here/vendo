@@ -6,6 +6,7 @@ import { Button } from './ui/button';
 import { Label } from './ui/label';
 import Link from 'next/link';
 import HeaderLabel from './header-label';
+import { useRouter } from 'next/navigation';
 
 export default function LoginForm() {
   const [user, setUser] = useState({
@@ -14,7 +15,7 @@ export default function LoginForm() {
   });
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState<string | null>(null);
+  const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -25,7 +26,6 @@ export default function LoginForm() {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    setSuccess(null);
     try {
       const response = await fetch('/api/users/login', {
         method: 'POST',
@@ -34,9 +34,12 @@ export default function LoginForm() {
       });
       const data = await response.json();
       if (!response.ok) {
-        setError(data.message);
+        setError(data.errors[0].message);
+        setLoading(false);
+        return;
       }
-      setSuccess('Login successful');
+      router.push('/');
+      router.refresh();
     } catch (error) {
       console.error('Login error:', error);
       setError('An error occurred during login');
@@ -79,15 +82,6 @@ export default function LoginForm() {
             Forgot Password
           </Link>
         </div>
-
-        {success && (
-          <div className="text-green-500 text-sm text-center flex flex-col items-center gap-2 justify-center">
-            <span className="text-sm">{success}</span>
-            <Link href="/login" className="text-blue-500 hover:underline">
-              <Button className="text-sm cursor-pointer"> Back to Login </Button>
-            </Link>
-          </div>
-        )}
       </form>
     </div>
   );
