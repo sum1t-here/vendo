@@ -11,6 +11,7 @@ import { Users } from './collections/Users';
 import { Cart } from './collections/Cart';
 import { cloudStoragePlugin } from '@payloadcms/plugin-cloud-storage';
 import { cloudinaryAdapter, cloudinary } from './lib/cloudinary';
+import { stripePlugin } from '@payloadcms/plugin-stripe';
 
 export default buildConfig({
   // admin panel
@@ -51,6 +52,107 @@ export default buildConfig({
           adapter: cloudinaryAdapter,
           disableLocalStorage: true,
           generateFileURL: ({ filename }) => cloudinary.url(`vendo/${filename}`, { secure: true }),
+        },
+      },
+    }),
+    stripePlugin({
+      stripeSecretKey: process.env.STRIPE_SECRET_KEY!,
+      stripeWebhooksEndpointSecret: process.env.STRIPE_WEBHOOKS_ENDPOINT_SECRET!,
+      webhooks: {
+        'checkout.session.completed': async ({ payload, event }) => {
+          const session = event.data.object;
+
+          // prevent duplicate orders
+          const { docs: existingUser } = await payload.find({
+            collection: 'orders',
+            where: {
+              stripeSessionId: { equals: session.id },
+            },
+          });
+
+          if (existingUser.length > 0) {
+            return;
+          }
+
+          const items = JSON.parse(session.metadata.items);
+          const userId = session.metadata.userId;
+
+          // deduct stock
+          for (const item of items) {
+            const { docs } = await payload.find({
+              collection: 'products',
+              where: {
+                id: { equals: item.id },
+              },
+              depth: 0,
+              limit: 1,
+            });
+
+            const product = docs[0];
+
+            if (!product) {
+              console.error('Product not found for id:', item.id);
+              continue;
+            }
+
+            if (item.variantId) {
+              const updatedVariants = product?.variants?.map(
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                (v: any) => (v.id === item.variantId ? { ...v, stock: Math.max(0, v.stock - item.quantity) } : v)
+              );
+
+              await payload.update({
+                collection: 'products',
+                id: product.id,
+                data: {
+                  variants: updatedVariants,
+                },
+              });
+            } else {
+              await payload.update({
+                collection: 'products',
+                id: product.id,
+                data: {
+                  // item.quantity : 0 as quantity:any
+                  stock: Math.max(0, product?.stock ? -item.quantity : 0),
+                },
+              });
+            }
+          }
+
+          if (!userId) {
+            console.error('No userId in session metadata');
+            return;
+          }
+
+          // create order
+          await payload.create({
+            collection: 'orders',
+            data: {
+              customer: Number(userId),
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              items: items.map((item: any) => ({
+                product: item.id,
+                productName: item.name,
+                price: item.price,
+                quantity: item.quantity,
+                variantId: item.variantId ?? null,
+                variantValue: item.variantValue ?? null,
+              })),
+              total: (session.amount_total ?? 0) / 100,
+              status: 'paid',
+              stripeSessionId: session.id,
+              shippingAddress: session.shipping_details?.address ? {
+                name: session.shipping_details?.name || session.customer_details?.name || '',
+                address1: session.shipping_details.address.line1 || '',
+                address2: session.shipping_details.address.line2 || '',
+                city: session.shipping_details.address.city || '',
+                state: session.shipping_details.address.state || '',
+                zip: session.shipping_details.address.postal_code || '',
+                country: session.shipping_details.address.country || '',
+              } : undefined,
+            },
+          });
         },
       },
     }),

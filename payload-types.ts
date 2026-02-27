@@ -336,7 +336,7 @@ export interface Order {
    */
   items: {
     /**
-     * Reference to the product. May change in the future
+     * Reference to the product
      */
     product?: (number | null) | Product;
     /**
@@ -344,17 +344,18 @@ export interface Order {
      */
     productName: string;
     /**
-     * Product price at time of purchase
+     * Price at time of purchase
      */
     price: number;
-    /**
-     * Product quantity at time of purchase
-     */
     quantity: number;
     /**
-     * Variant at time of purchase
+     * Variant ID at time of purchase
      */
-    variant?: string | null;
+    variantId?: string | null;
+    /**
+     * Variant value e.g. S, M, Red
+     */
+    variantValue?: string | null;
     id?: string | null;
   }[];
   /**
@@ -612,7 +613,8 @@ export interface OrdersSelect<T extends boolean = true> {
         productName?: T;
         price?: T;
         quantity?: T;
-        variant?: T;
+        variantId?: T;
+        variantValue?: T;
         id?: T;
       };
   total?: T;

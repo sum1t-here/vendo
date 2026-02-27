@@ -8,8 +8,14 @@ import { Button } from './ui/button';
 import { toast } from 'sonner';
 import Link from 'next/link';
 import { MinusIcon, PlusIcon } from 'lucide-react';
+import { User } from '@/payload-types';
 
-export default function Cart() {
+interface CartProps {
+  user: User | null;
+}
+
+
+export default function Cart({user}: CartProps) {
   const cart = useCartStore(state => state.items);
   const removeItem = useCartStore(state => state.removeFromCart);
   const emptyCart = useCartStore(state => state.clearCart);
@@ -34,6 +40,46 @@ export default function Cart() {
         </Link>
       </div>
     );
+  }
+
+  const handleCheckout = async () => {
+    if(!user) {
+        toast.error('Please login to checkout');
+        return;
+    }
+
+    const isAddressIncomplete = (address: typeof user.address) => {
+      const requiredFields = ['street', 'city', 'state', 'zip'] as const;
+      return requiredFields.some(field => !address?.[field]);
+    }
+
+    if(isAddressIncomplete(user.address)) {
+      toast.error('Please complete your address', {
+        action: {
+          label: 'Update Address',
+          onClick: () => {
+            window.location.href = '/profile';
+          },
+        },
+      });
+      return;
+    }
+
+   const { session, error } = await fetch('/api/checkout', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ items: cart }),
+  }).then(res => res.json())
+
+if (error) {
+  toast.error(error)
+  return
+}
+
+if (session?.url) {
+  window.location.href = session.url  // ← session.url not url
+}
+    
   }
 
   return (
@@ -126,7 +172,7 @@ export default function Cart() {
           Clear Cart
         </Button>
 
-        <Button className="bg-black text-white font-black px-8 py-6 border-2 border-black shadow-[4px_4px_0px_#555] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all">
+        <Button className="bg-black text-white font-black px-8 py-6 border-2 border-black shadow-[4px_4px_0px_#555] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all" onClick={handleCheckout}>
           Checkout →
         </Button>
       </div>

@@ -15,6 +15,8 @@ import type { CollectionConfig } from 'payload';
 
 export const Orders: CollectionConfig = {
   slug: 'orders',
+  // disable versioning
+  versions: false,
   admin: {
     useAsTitle: 'id',
     defaultColumns: ['id', 'customer', 'total', 'createdAt'],
@@ -55,35 +57,39 @@ export const Orders: CollectionConfig = {
       },
       fields: [
         {
-          name: 'product',
-          type: 'relationship',
-          relationTo: 'products',
-          admin: { description: 'Reference to the product. May change in the future' },
-        },
-        {
-          name: 'productName',
-          type: 'text',
-          required: true,
-          admin: { description: 'Product name at time of purchase' },
-        },
-        {
-          name: 'price',
-          type: 'number',
-          required: true,
-          admin: { description: 'Product price at time of purchase' },
-        },
-        {
-          name: 'quantity',
-          type: 'number',
-          min: 1,
-          required: true,
-          admin: { description: 'Product quantity at time of purchase' },
-        },
-        {
-          name: 'variant',
-          type: 'text',
-          admin: { description: 'Variant at time of purchase' },
-        },
+      name: 'product',
+      type: 'relationship',
+      relationTo: 'products',
+      admin: { description: 'Reference to the product' },
+    },
+    {
+      name: 'productName',
+      type: 'text',
+      required: true,
+      admin: { description: 'Product name at time of purchase' },
+    },
+    {
+      name: 'price',
+      type: 'number',
+      required: true,
+      admin: { description: 'Price at time of purchase' },
+    },
+    {
+      name: 'quantity',
+      type: 'number',
+      min: 1,
+      required: true,
+    },
+    {
+      name: 'variantId',
+      type: 'text',
+      admin: { description: 'Variant ID at time of purchase' },
+    },
+    {
+      name: 'variantValue',
+      type: 'text',
+      admin: { description: 'Variant value e.g. S, M, Red' },
+    },
       ],
     },
     {
@@ -100,6 +106,7 @@ export const Orders: CollectionConfig = {
       name: 'status',
       type: 'select',
       required: true,
+      defaultValue: 'pending',
       options: [
         { label: 'Pending', value: 'pending' },
         { label: 'Paid', value: 'paid' },

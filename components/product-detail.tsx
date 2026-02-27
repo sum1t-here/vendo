@@ -168,7 +168,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
               handleAddToCart();
             }}
           >
-            {product.stock === 0 ? 'Out of Stock' : 'Add to Cart →'}
+            {isInStock(product, selectedVariant?.id) ? 'Add to Cart →' : 'Out of Stock'}
           </Button>
 
           {/* Description */}

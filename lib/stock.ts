@@ -10,9 +10,11 @@ export function getProductStock(product: any) {
 }
 
 export function isInStock(product: any, variantId?: string) {
+  // if variantId is provided, check variant stock
   if (variantId) {
     const variant = product.variants?.find((v: any) => v.id === variantId);
     return (variant?.stock ?? 0) > 0;
   }
+  // otherwise check product stock
   return getProductStock(product) > 0;
 }
