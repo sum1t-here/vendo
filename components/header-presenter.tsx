@@ -24,6 +24,8 @@ export default function HeaderPresenter({ user }: { user: User | null }) {
   const router = useRouter();
   const control = useAnimation();
   const totalItems = useCartStore(state => state.totalItems());
+  const clearCart = useCartStore(state => state.clearCart);
+  const cartItems = useCartStore(state => state.items);
 
   useEffect(() => {
     if (totalItems > 0) {
@@ -35,9 +37,17 @@ export default function HeaderPresenter({ user }: { user: User | null }) {
   }, [totalItems, control]);
 
   const handleLogout = async () => {
+    if (cartItems.length > 0) {
+      await fetch('/api/cart', {
+        method: 'POST',
+        body: JSON.stringify({ items: cartItems }),
+      });
+    }
+
     await fetch('/api/users/logout', {
       method: 'POST',
     });
+    clearCart();
     router.push('/');
     router.refresh();
   };

@@ -17,6 +17,7 @@ interface ProductDetailProps {
 export default function ProductDetail({ product }: ProductDetailProps) {
   const [selectedVariant, setSelectedVariant] = useState<any>(null);
   const addItem = useCartStore(state => state.addToCart);
+  const cart = useCartStore(state => state.items);
 
   if (!product) return null;
 
@@ -30,16 +31,42 @@ export default function ProductDetail({ product }: ProductDetailProps) {
   }, {});
 
   const handleAddToCart = () => {
-    addItem({
-      id: product.id,
-      name: product.name,
-      price: price,
-      image: product.image[0].imageUrl.url,
-      slug: product.slug,
-      quantity: 1,
-      variantId: selectedVariant?.id,
-      variantValue: selectedVariant?.value,
-    });
+    const itemInCart = cart.find(cartItem => cartItem.id === product.id && cartItem.variantId === selectedVariant?.id);
+    if (itemInCart) {
+      const maxStock = itemInCart.variantStock ?? 0;
+      if (itemInCart.quantity >= maxStock) {
+        toast.error(`Only ${maxStock} items are available for ${itemInCart.name} (${itemInCart.variantValue})`);
+        return;
+      }
+    }
+
+    try {
+      addItem({
+        id: product.id,
+        name: product.name,
+        price: price,
+        image: product.image[0].imageUrl.url,
+        slug: product.slug,
+        quantity: 1,
+        variantId: selectedVariant?.id,
+        variantValue: selectedVariant?.value,
+        variantStock: selectedVariant?.stock,
+      });
+
+      toast.success(
+        `${selectedVariant?.value ? `${product.name} (${selectedVariant?.value})` : product.name} added to cart`,
+        {
+          action: {
+            label: 'View Cart',
+            onClick: () => {
+              window.location.href = '/cart';
+            },
+          },
+        }
+      );
+    } catch (error: any) {
+      toast.error(error.message);
+    }
   };
   return (
     <div className="pt-7 px-4 md:px-14 min-h-screen w-full flex items-center justify-center">
@@ -139,7 +166,6 @@ export default function ProductDetail({ product }: ProductDetailProps) {
             className="w-full border-2 border-black bg-black text-white font-black py-6 text-base shadow-[4px_4px_0px_#555] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             onClick={() => {
               handleAddToCart();
-              toast.success('Item added to cart');
             }}
           >
             {product.stock === 0 ? 'Out of Stock' : 'Add to Cart →'}

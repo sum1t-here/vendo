@@ -7,6 +7,8 @@ import { Label } from './ui/label';
 import Link from 'next/link';
 import HeaderLabel from './header-label';
 import { useRouter } from 'next/navigation';
+import { fetchCartFromServer } from '@/lib/cartSync';
+import { useCartStore } from '@/store/cart';
 
 export default function LoginForm() {
   const [user, setUser] = useState({
@@ -37,6 +39,12 @@ export default function LoginForm() {
         setError(data.errors[0].message);
         setLoading(false);
         return;
+      }
+
+      // sync cart with server
+      const serverItems = await fetchCartFromServer();
+      if (serverItems.length > 0) {
+        useCartStore.setState({ items: serverItems });
       }
       router.push('/');
       router.refresh();

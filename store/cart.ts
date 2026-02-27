@@ -1,3 +1,4 @@
+import { toast } from 'sonner';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
@@ -10,6 +11,7 @@ export interface CartItem {
   quantity: number;
   variantId?: number;
   variantValue?: string;
+  variantStock?: number;
 }
 
 interface cartStore {
@@ -27,10 +29,17 @@ export const useCartStore = create<cartStore>()(
     (set, get) => ({
       items: [],
       addToCart: (item: CartItem) => {
+        // check if item is already in cart
         const existingItem = get().items.find(
           cartItem => cartItem.id === item.id && cartItem.variantId === item.variantId
         );
         if (existingItem) {
+          // check if adding more items will exceed the stock
+          const maxStock = existingItem.variantStock ?? 0;
+          if (existingItem.quantity >= maxStock) {
+            toast.error(`Only ${maxStock} items are available for ${existingItem.name} (${existingItem.variantValue})`);
+            return;
+          }
           set(state => ({
             items: state.items.map(cartItem =>
               cartItem.id === item.id && cartItem.variantId === item.variantId
@@ -39,6 +48,7 @@ export const useCartStore = create<cartStore>()(
             ),
           }));
         } else {
+          // add new item to cart
           set(state => ({
             items: [...state.items, { ...item, quantity: 1 }],
           }));
@@ -57,18 +67,33 @@ export const useCartStore = create<cartStore>()(
         });
       },
       updateCartItemQuantity: (id: number, quantity: number, variantId?: number) => {
+        const existingItem = get().items.find(cartItem => cartItem.id === id && cartItem.variantId === variantId);
+        const maxStock = existingItem?.variantStock ?? 0;
+        if (quantity > maxStock) {
+          toast.error(`Only ${maxStock} items are available for ${existingItem?.name} (${existingItem?.variantValue})`);
+          return;
+        }
+        // if quantity is 0 or less, remove the item from cart
+        if (quantity <= 0) {
+          get().removeFromCart(id, variantId);
+          return;
+        }
         set(state => ({
           items: state.items.map(cartItem =>
             cartItem.id === id && cartItem.variantId === variantId ? { ...cartItem, quantity } : cartItem
           ),
         }));
       },
+      // clear cart
       clearCart: () => {
         set({ items: [] });
       },
+      // get total items
       totalItems: () => get().items.reduce((total, item) => total + item.quantity, 0),
+      // get total price
       totalPrice: () => get().items.reduce((total, item) => total + item.price * item.quantity, 0),
     }),
+    // store cart items in local storage
     {
       name: 'cart-storage',
     }

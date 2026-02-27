@@ -8,6 +8,7 @@ import { Categories } from './collections/Categories';
 import { Media } from './collections/Media';
 import { Orders } from './collections/Orders';
 import { Users } from './collections/Users';
+import { Cart } from './collections/Cart';
 import { cloudStoragePlugin } from '@payloadcms/plugin-cloud-storage';
 import { cloudinaryAdapter, cloudinary } from './lib/cloudinary';
 
@@ -18,7 +19,7 @@ export default buildConfig({
   },
 
   // collections
-  collections: [Users, Products, Categories, Media, Orders],
+  collections: [Users, Products, Categories, Media, Orders, Cart],
 
   // secret
   secret: process.env.PAYLOAD_SECRET!,
