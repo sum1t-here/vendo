@@ -142,15 +142,17 @@ export default buildConfig({
               total: (session.amount_total ?? 0) / 100,
               status: 'paid',
               stripeSessionId: session.id,
-              shippingAddress: session.shipping_details?.address ? {
-                name: session.shipping_details?.name || session.customer_details?.name || '',
-                address1: session.shipping_details.address.line1 || '',
-                address2: session.shipping_details.address.line2 || '',
-                city: session.shipping_details.address.city || '',
-                state: session.shipping_details.address.state || '',
-                zip: session.shipping_details.address.postal_code || '',
-                country: session.shipping_details.address.country || '',
-              } : undefined,
+              shippingAddress: session.shipping_details?.address
+                ? {
+                    name: session.shipping_details?.name || session.customer_details?.name || '',
+                    address1: session.shipping_details.address.line1 || '',
+                    address2: session.shipping_details.address.line2 || '',
+                    city: session.shipping_details.address.city || '',
+                    state: session.shipping_details.address.state || '',
+                    zip: session.shipping_details.address.postal_code || '',
+                    country: session.shipping_details.address.country || '',
+                  }
+                : undefined,
             },
           });
         },

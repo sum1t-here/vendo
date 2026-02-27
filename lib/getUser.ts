@@ -1,6 +1,6 @@
-import payloadConfig from "@/payload.config";
-import { cookies } from "next/headers";
-import { getPayload } from "payload";
+import payloadConfig from '@/payload.config';
+import { cookies } from 'next/headers';
+import { getPayload } from 'payload';
 
 export async function getUser() {
   const payload = await getPayload({ config: payloadConfig });

@@ -57,39 +57,39 @@ export const Orders: CollectionConfig = {
       },
       fields: [
         {
-      name: 'product',
-      type: 'relationship',
-      relationTo: 'products',
-      admin: { description: 'Reference to the product' },
-    },
-    {
-      name: 'productName',
-      type: 'text',
-      required: true,
-      admin: { description: 'Product name at time of purchase' },
-    },
-    {
-      name: 'price',
-      type: 'number',
-      required: true,
-      admin: { description: 'Price at time of purchase' },
-    },
-    {
-      name: 'quantity',
-      type: 'number',
-      min: 1,
-      required: true,
-    },
-    {
-      name: 'variantId',
-      type: 'text',
-      admin: { description: 'Variant ID at time of purchase' },
-    },
-    {
-      name: 'variantValue',
-      type: 'text',
-      admin: { description: 'Variant value e.g. S, M, Red' },
-    },
+          name: 'product',
+          type: 'relationship',
+          relationTo: 'products',
+          admin: { description: 'Reference to the product' },
+        },
+        {
+          name: 'productName',
+          type: 'text',
+          required: true,
+          admin: { description: 'Product name at time of purchase' },
+        },
+        {
+          name: 'price',
+          type: 'number',
+          required: true,
+          admin: { description: 'Price at time of purchase' },
+        },
+        {
+          name: 'quantity',
+          type: 'number',
+          min: 1,
+          required: true,
+        },
+        {
+          name: 'variantId',
+          type: 'text',
+          admin: { description: 'Variant ID at time of purchase' },
+        },
+        {
+          name: 'variantValue',
+          type: 'text',
+          admin: { description: 'Variant value e.g. S, M, Red' },
+        },
       ],
     },
     {

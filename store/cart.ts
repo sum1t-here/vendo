@@ -30,7 +30,7 @@ const syncToServer = async (items: CartItem[]) => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ items }),
   });
-}
+};
 
 // debounced sync to server
 let syncTimeout: ReturnType<typeof setTimeout> | null = null;
@@ -41,7 +41,7 @@ const debouncedSyncToServer = (items: CartItem[]) => {
   syncTimeout = setTimeout(() => {
     syncToServer(items);
   }, 1000);
-}
+};
 
 export const useCartStore = create<cartStore>()(
   persist(
