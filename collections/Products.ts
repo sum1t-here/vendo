@@ -174,6 +174,9 @@ export const Products: CollectionConfig = {
           type: 'number',
           min: 0,
           defaultValue: 0,
+          admin: {
+            description: 'Number of items available in stock',
+          },
         },
       ],
     },

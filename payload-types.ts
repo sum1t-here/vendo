@@ -242,6 +242,9 @@ export interface Product {
          * Variant price. Leave empty to use base product price
          */
         price?: number | null;
+        /**
+         * Number of items available in stock
+         */
         stock?: number | null;
         id?: string | null;
       }[]

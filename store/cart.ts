@@ -24,6 +24,25 @@ interface cartStore {
   totalPrice: () => number;
 }
 
+const syncToServer = async (items: CartItem[]) => {
+  await fetch('/api/cart', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ items }),
+  });
+}
+
+// debounced sync to server
+let syncTimeout: ReturnType<typeof setTimeout> | null = null;
+const debouncedSyncToServer = (items: CartItem[]) => {
+  if (syncTimeout) {
+    clearTimeout(syncTimeout);
+  }
+  syncTimeout = setTimeout(() => {
+    syncToServer(items);
+  }, 1000);
+}
+
 export const useCartStore = create<cartStore>()(
   persist(
     (set, get) => ({
@@ -53,6 +72,7 @@ export const useCartStore = create<cartStore>()(
             items: [...state.items, { ...item, quantity: 1 }],
           }));
         }
+        syncToServer(get().items);
       },
       removeFromCart: (id: number, variantId?: number) => {
         set({
@@ -65,6 +85,7 @@ export const useCartStore = create<cartStore>()(
             return !(cartItem.id === id);
           }),
         });
+        syncToServer(get().items);
       },
       updateCartItemQuantity: (id: number, quantity: number, variantId?: number) => {
         const existingItem = get().items.find(cartItem => cartItem.id === id && cartItem.variantId === variantId);
@@ -83,6 +104,7 @@ export const useCartStore = create<cartStore>()(
             cartItem.id === id && cartItem.variantId === variantId ? { ...cartItem, quantity } : cartItem
           ),
         }));
+        debouncedSyncToServer(get().items);
       },
       // clear cart
       clearCart: () => {
