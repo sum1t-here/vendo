@@ -9,7 +9,7 @@ export interface CartItem {
   image: string;
   slug: string;
   quantity: number;
-  variantId?: number;
+  variantId?: string;
   variantValue?: string;
   variantStock?: number;
 }
@@ -17,8 +17,8 @@ export interface CartItem {
 interface cartStore {
   items: CartItem[];
   addToCart: (item: CartItem) => void;
-  removeFromCart: (id: number, variantId?: number) => void;
-  updateCartItemQuantity: (id: number, quantity: number, variantId?: number) => void;
+  removeFromCart: (id: number, variantId?: string) => void;
+  updateCartItemQuantity: (id: number, quantity: number, variantId?: string) => void;
   clearCart: () => void;
   totalItems: () => number;
   totalPrice: () => number;
@@ -74,7 +74,7 @@ export const useCartStore = create<cartStore>()(
         }
         syncToServer(get().items);
       },
-      removeFromCart: (id: number, variantId?: number) => {
+      removeFromCart: (id: number, variantId?: string) => {
         set({
           items: get().items.filter(cartItem => {
             if (variantId !== undefined) {
@@ -87,7 +87,7 @@ export const useCartStore = create<cartStore>()(
         });
         syncToServer(get().items);
       },
-      updateCartItemQuantity: (id: number, quantity: number, variantId?: number) => {
+      updateCartItemQuantity: (id: number, quantity: number, variantId?: string) => {
         const existingItem = get().items.find(cartItem => cartItem.id === id && cartItem.variantId === variantId);
         const maxStock = existingItem?.variantStock ?? 0;
         if (quantity > maxStock) {

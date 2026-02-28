@@ -14,6 +14,9 @@ import { cloudinaryAdapter, cloudinary } from './lib/cloudinary';
 import { stripePlugin } from '@payloadcms/plugin-stripe';
 import OrderConfirmation from './components/email/order-confirmation';
 import { render } from '@react-email/components';
+import { Product } from './payload-types';
+
+type Variants = NonNullable<Product['variants']>[number];
 
 export default buildConfig({
   // admin panel
@@ -99,8 +102,7 @@ export default buildConfig({
 
             if (item.variantId) {
               const updatedVariants = product?.variants?.map(
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                (v: any) => (v.id === item.variantId ? { ...v, stock: Math.max(0, v.stock - item.quantity) } : v)
+                (v: Variants) => (v.id === item.variantId ? { ...v, stock: Math.max(0, (v.stock ?? 0) - item.quantity) } : v)
               );
 
               await payload.update({
@@ -116,7 +118,7 @@ export default buildConfig({
                 id: product.id,
                 data: {
                   // item.quantity : 0 as quantity:any
-                  stock: Math.max(0, product?.stock ? -item.quantity : 0),
+                  stock: Math.max(0, (product?.stock ?? 0) - item.quantity),
                 },
               });
             }

@@ -8,9 +8,9 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import Link from 'next/link'
+import { Order } from '@/payload-types'
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-export default function Orders({ orders }: { orders: any }) {
+export default function Orders({ orders }: { orders: Order[] }) {
   if (!orders || orders.length === 0) {
     return (
       <div className="pt-7 px-7 md:px-14 min-h-screen flex flex-col items-center justify-center gap-4">
@@ -40,7 +40,7 @@ export default function Orders({ orders }: { orders: any }) {
     <div className="pt-7 px-7 md:px-14 min-h-screen">
 
       <div className="flex flex-col gap-6">
-        {orders.map((order: any) => (
+        {orders.map((order) => (
           <div
             key={order.id}
             className="border-2 border-black shadow-[6px_6px_0px_#000]"
@@ -103,13 +103,13 @@ export default function Orders({ orders }: { orders: any }) {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {order.items.map((item: any) => (
+                {order.items.map((item) => (
                   <TableRow key={item.id} className="border-b border-black last:border-0 bg-secondary-background">
                     <TableCell className="font-bold">
-                      {item.productName ?? item.product?.name ?? '—'}
+                      {item.productName}
                     </TableCell>
                     <TableCell className="text-muted-foreground text-sm">
-                      {item.variantValue ?? '—'}
+                      {item.variantValue}
                     </TableCell>
                     <TableCell>₹{item.price}</TableCell>
                     <TableCell>{item.quantity}</TableCell>

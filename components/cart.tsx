@@ -22,7 +22,7 @@ export default function Cart({ user }: CartProps) {
   const totalPrice = useCartStore(state => state.totalPrice);
   const updateCartItemQuantity = useCartStore(state => state.updateCartItemQuantity);
 
-  const handleRemoveItem = (id: number, variantId?: number) => {
+  const handleRemoveItem = (id: number, variantId?: string) => {
     removeItem(id, variantId);
     toast.success('Item removed from cart');
   };

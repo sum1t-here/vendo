@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 import { RichText } from '@payloadcms/richtext-lexical/react';
 import Image from 'next/image';
@@ -9,13 +8,11 @@ import { discountPercent } from '@/lib/discount';
 import { getProductStock, isInStock } from '@/lib/stock';
 import { useCartStore } from '@/store/cart';
 import { toast } from 'sonner';
+import { Product } from '@/payload-types';
 
-interface ProductDetailProps {
-  product: any;
-}
-
-export default function ProductDetail({ product }: ProductDetailProps) {
-  const [selectedVariant, setSelectedVariant] = useState<any>(null);
+export default function ProductDetail({ product }: { product: Product }) {
+  type ProductVariant = NonNullable<Product['variants']>[number];
+  const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null);
   const addItem = useCartStore(state => state.addToCart);
   const cart = useCartStore(state => state.items);
 
@@ -24,11 +21,11 @@ export default function ProductDetail({ product }: ProductDetailProps) {
   const price = selectedVariant?.price ?? product.price;
 
   // Group variants by name (e.g. Size: [S, M, L], Color: [Red, Blue])
-  const variantGroups = product.variants?.reduce((acc: any, variant: any) => {
+  const variantGroups = product.variants?.reduce((acc: Record<string, ProductVariant[]>, variant: ProductVariant) => {
     if (!acc[variant.name]) acc[variant.name] = [];
     acc[variant.name].push(variant);
     return acc;
-  }, {});
+  }, {} as Record<string, ProductVariant[]>);
 
   const handleAddToCart = () => {
     const itemInCart = cart.find(cartItem => cartItem.id === product.id && cartItem.variantId === selectedVariant?.id);
@@ -41,16 +38,19 @@ export default function ProductDetail({ product }: ProductDetailProps) {
     }
 
     try {
+      const firstImageMedia = product.image?.[0]?.imageUrl;
+      const firstImageUrl = typeof firstImageMedia === 'object' && firstImageMedia !== null ? firstImageMedia.url : '';
+
       addItem({
         id: product.id,
         name: product.name,
         price: price,
-        image: product.image[0].imageUrl.url,
+        image: firstImageUrl || '',
         slug: product.slug,
         quantity: 1,
-        variantId: selectedVariant?.id,
+        variantId: selectedVariant?.id ?? undefined,
         variantValue: selectedVariant?.value,
-        variantStock: selectedVariant?.stock,
+        variantStock: selectedVariant?.stock ?? undefined,
       });
 
       toast.success(
@@ -64,8 +64,10 @@ export default function ProductDetail({ product }: ProductDetailProps) {
           },
         }
       );
-    } catch (error: any) {
-      toast.error(error.message);
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      }
     }
   };
   return (
@@ -73,31 +75,43 @@ export default function ProductDetail({ product }: ProductDetailProps) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-14 w-full">
         {/* Left — Images */}
         <div>
-          {product.image.length > 1 ? (
+          {product.image && product.image.length > 1 ? (
             <Carousel className="w-full rounded-md border-2 border-black shadow-[6px_6px_0px_#000]">
               <CarouselContent>
-                {product.image.map((image: any) => (
-                  <CarouselItem key={image.id}>
-                    <div className="relative w-full h-[420px]">
-                      <Image
-                        src={image.imageUrl.url}
-                        alt={image.alt || product.name}
-                        fill
-                        unoptimized
-                        className="object-cover rounded-md"
-                      />
-                    </div>
-                  </CarouselItem>
-                ))}
+                {product.image.map((img, index) => {
+                  const media = img.imageUrl;
+                  const imageUrl = typeof media === 'object' && media !== null ? media.url : '';
+                  return (
+                    <CarouselItem key={img.id || index}>
+                      <div className="relative w-full h-[420px]">
+                        {imageUrl && (
+                          <Image
+                            src={imageUrl}
+                            alt={img.alt || product.name}
+                            fill
+                            unoptimized
+                            className="object-cover rounded-md"
+                          />
+                        )}
+                      </div>
+                    </CarouselItem>
+                  );
+                })}
               </CarouselContent>
               <CarouselPrevious className="left-2 border-2 border-black" />
               <CarouselNext className="right-2 border-2 border-black" />
             </Carousel>
-          ) : (
+          ) : product.image && product.image.length === 1 ? (
             <div className="relative w-full h-[420px] border-2 border-black shadow-[6px_6px_0px_#000] overflow-hidden">
-              <Image src={product.image[0].imageUrl.url} alt={product.name} fill unoptimized className="object-cover" />
+              {(() => {
+                const media = product.image[0].imageUrl;
+                const imageUrl = typeof media === 'object' && media !== null ? media.url : '';
+                return imageUrl ? (
+                  <Image src={imageUrl} alt={product.name} fill unoptimized className="object-cover" />
+                ) : null;
+              })()}
             </div>
-          )}
+          ) : null}
         </div>
 
         {/* Right — Details */}
@@ -105,7 +119,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
           {/* Category + Name */}
           <div>
             <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-              {product.category?.name}
+              {typeof product.category === 'object' && product.category !== null ? product.category.name : 'Unknown'}
             </span>
             <h1 className="text-3xl font-black leading-tight mt-1">{product.name}</h1>
           </div>
@@ -125,11 +139,11 @@ export default function ProductDetail({ product }: ProductDetailProps) {
 
           {/* Variants */}
           {variantGroups &&
-            Object.entries(variantGroups).map(([groupName, variants]: any) => (
+            Object.entries(variantGroups).map(([groupName, variants]) => (
               <div key={groupName}>
                 <p className="text-sm font-bold uppercase mb-2">{groupName}</p>
                 <div className="flex gap-2 flex-wrap">
-                  {variants.map((variant: any) => (
+                  {variants.map((variant) => (
                     <button
                       key={variant.id}
                       onClick={() => setSelectedVariant(selectedVariant?.id === variant.id ? null : variant)}
@@ -155,20 +169,20 @@ export default function ProductDetail({ product }: ProductDetailProps) {
             {product.stock === 0 ? 'Out of stock' : `${product.stock} in stock`}
           </p> */}
           <p
-            className={`text-sm font-bold ${isInStock(product, selectedVariant?.id) ? 'text-green-600' : 'text-red-500'}`}
+            className={`text-sm font-bold ${isInStock(product, selectedVariant?.id ?? undefined) ? 'text-green-600' : 'text-red-500'}`}
           >
-            {isInStock(product, selectedVariant?.id) ? `${getProductStock(product)} in stock` : 'Out of stock'}
+            {isInStock(product, selectedVariant?.id ?? undefined) ? `${getProductStock(product)} in stock` : 'Out of stock'}
           </p>
 
           {/* Add to cart */}
           <Button
-            disabled={!isInStock(product, selectedVariant?.id)}
+            disabled={!isInStock(product, selectedVariant?.id ?? undefined)}
             className="w-full border-2 border-black bg-black text-white font-black py-6 text-base shadow-[4px_4px_0px_#555] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             onClick={() => {
               handleAddToCart();
             }}
           >
-            {isInStock(product, selectedVariant?.id) ? 'Add to Cart →' : 'Out of Stock'}
+            {isInStock(product, selectedVariant?.id ?? undefined) ? 'Add to Cart →' : 'Out of Stock'}
           </Button>
 
           {/* Description */}

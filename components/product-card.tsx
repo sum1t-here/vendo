@@ -1,14 +1,11 @@
 import { discountPercent } from '@/lib/discount';
 import Image from 'next/image';
 import Link from 'next/link';
+import { Product } from '@/payload-types';
 
-interface ProductCardProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  product: any;
-}
-
-export default function ProductCard({ product }: ProductCardProps) {
-  const imageUrl = product.image?.[0]?.imageUrl?.url;
+export default function ProductCard({ product }: { product: Product }) {
+  const media = product.image?.[0]?.imageUrl;
+  const imageUrl = typeof media === 'object' && media !== null ? media.url : null;
   let discountPercentNumber = 0;
   if (product.comparePrice && product.comparePrice > product.price) {
     discountPercentNumber = Number(discountPercent(product.comparePrice, product.price));
@@ -44,7 +41,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       {/* Info */}
       <div className="p-3 flex flex-col gap-1">
         <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-          {product.category?.name}
+          {typeof product.category === 'object' && product.category !== null ? product.category.name : 'Unknown'}
         </span>
         <h3 className="font-black text-sm leading-tight truncate">{product.name}</h3>
         <div className="flex items-center gap-2 mt-1">

@@ -3,6 +3,9 @@ import payloadConfig from '@/payload.config';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 import { getPayload } from 'payload';
+import { Product } from '@/payload-types';
+
+type Variants = NonNullable<Product['variants']>[number];
 
 export async function POST(req: Request) {
   try {
@@ -55,8 +58,7 @@ export async function POST(req: Request) {
 
       if (cartItem.variantId) {
         // check if variant exists
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const variant = product.variants?.find((v: any) => v.id === cartItem.variantId);
+        const variant = product.variants?.find((v: Variants) => v.id === cartItem.variantId);
         if (!variant) {
           return NextResponse.json({ error: 'Variant not found' }, { status: 404 });
         }
