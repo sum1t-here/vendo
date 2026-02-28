@@ -1,6 +1,6 @@
 # Webhook Architecture - Vendo
 
-*The webhook we are referring here is the stripe webhook*
+_The webhook we are referring here is the stripe webhook_
 
 Version: v1
 Status: Active
@@ -8,11 +8,13 @@ Last Updated: 28/02/2026
 Related Commit: [14ab5a3](https://github.com/sum1t-here/vendo/commit/14ab5a39ac7623def01b55fd662123d68778e9c0)
 
 ## Overview
+
 The Stripe webhook is the authoritative source of truth for payment confirmation.
 
 Critical business state changes (order confirmation, stock deduction) occur only after Stripe confirms payment via webhook.
 
 We do not:
+
 - Mark orders as paid on frontend success page
 - Deduct stock during checkout session creation
 - Trust client-side cart data
@@ -40,6 +42,7 @@ Webhook:
   - Creates Order in Payload
   - Deducts stock
 ```
+
 ## Checkout section metadata
 
 ```
@@ -57,6 +60,7 @@ metadata: {
   ),
 }
 ```
+
 - Stores immutable cart snapshot at checkout time
 - Allows webhook to reconstruct purchase without relying on frontend state
 - Avoids dependency on live cart state
@@ -71,6 +75,7 @@ Triggered on:
 ```
 checkout.session.completed
 ```
+
 Webhook performs:
 
 - Stripe signature verification
@@ -94,6 +99,7 @@ if (existingUser.length > 0) {
   return;
 }
 ```
+
 - Checking for existing order by stripeSessionId
 - Preventing duplicate order creation
 
@@ -146,14 +152,16 @@ for (const item of items) {
   }
 }
 ```
+
 - Stock is deducted only after payment is confirmed by Stripe
 - This prevents over-selling and ensures stock accuracy
-**NOTE**
-There is no database transaction wrapping order creation + stock deduction.
+  **NOTE**
+  There is no database transaction wrapping order creation + stock deduction.
 
 ## Security Measures
 
 Current implementation relies on:
+
 - Stripe signature verification
 - Idempotency check
 - Stock validation at checkout
@@ -168,11 +176,14 @@ Current implementation relies on:
 - Retry mechanism for failed webhooks
 
 ## Planned Observability
+
 Logging and monitoring will be implemented using:
+
 - Prometheus for metrics collection
 - Grafana for visualization and alerting
 
 Planned metrics include:
+
 - Checkout session creation count
 - Webhook success/failure count
 - Order creation rate

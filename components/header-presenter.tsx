@@ -73,7 +73,7 @@ export default function HeaderPresenter({ user }: { user: User | null }) {
                 </DropdownMenuSubTrigger>
                 <DropdownMenuSubContent>
                   <DropdownMenuLabel>
-                    <Link href="/dashboard">Dashboard</Link>
+                    <Link href="/orders">My Orders</Link>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuLabel>
@@ -163,7 +163,7 @@ export default function HeaderPresenter({ user }: { user: User | null }) {
                 // logged in user
                 <>
                   <DropdownMenuItem asChild>
-                    <Link href="/dashboard">Dashboard</Link>
+                    <Link href="/orders">My Orders</Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>

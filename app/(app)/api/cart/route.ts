@@ -46,3 +46,24 @@ export async function POST(req: Request) {
   }
   return NextResponse.json({ success: true });
 }
+
+export async function DELETE() {
+  const { payload, user } = await getUser();
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+  const { docs } = await payload.find({
+    collection: 'cart',
+    where: {
+      customer: { equals: user.id },
+    },
+    limit: 1,
+  });
+  if (docs.length > 0) {
+    await payload.delete({
+      collection: 'cart',
+      id: docs[0].id,
+    });
+  }
+  return NextResponse.json({ success: true });
+}

@@ -13,18 +13,30 @@ export default function ContactPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus('sending');
-    // wire to your email/API later
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    setStatus('sent');
+
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+
+      if (res.ok) {
+        setStatus('sent');
+        setForm({ name: '', email: '', message: '' });
+      } else {
+        setStatus('error');
+      }
+    } catch (error) {
+      console.error(error);
+      setStatus('error');
+    }
   };
 
   return (
     <div className="px-4 md:px-14 py-12 min-h-screen">
       <div className="flex flex-col w-full justify-center items-center gap-2">
         <HeaderLabel text="Contact Us" />
-        <p className="text-muted-foreground mt-2 mb-10">
-          Note: I can add the form backend with nodemailer or any other service you prefer.
-        </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">

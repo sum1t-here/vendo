@@ -12,6 +12,8 @@ import { Cart } from './collections/Cart';
 import { cloudStoragePlugin } from '@payloadcms/plugin-cloud-storage';
 import { cloudinaryAdapter, cloudinary } from './lib/cloudinary';
 import { stripePlugin } from '@payloadcms/plugin-stripe';
+import OrderConfirmation from './components/email/order-confirmation';
+import { render } from '@react-email/components';
 
 export default buildConfig({
   // admin panel
@@ -126,7 +128,7 @@ export default buildConfig({
           }
 
           // create order
-          await payload.create({
+          const order = await payload.create({
             collection: 'orders',
             data: {
               customer: Number(userId),
@@ -155,6 +157,41 @@ export default buildConfig({
                 : undefined,
             },
           });
+
+          // send mail
+          if (userId) {
+            const user = await payload.findByID({
+              collection: 'users',
+              id: Number(userId),
+            });
+
+            if (user?.email) {
+              try {
+                const emailHtml = await render(
+                OrderConfirmation({
+                  customerName: user.name,
+                  orderId: order?.id,
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  items: items.map((item: any) => ({
+                    productName: item.name,
+                    price: item.price,
+                    quantity: item.quantity,
+                    variantValue: item.variantValue ?? null,
+                  })),
+                  total: (session.amount_total ?? 0) / 100,
+                  shippingAddress: session.shipping_details ?? undefined,
+                })
+              );
+              await payload.sendEmail({
+                to:  process.env.CONTACT_RECEIVER_EMAIL!,
+                subject: `Order Confirmation - #${order.id}`,
+                html: emailHtml,
+              });
+              } catch (error) {
+                console.error('Failed to send email:', error);
+              }
+            }
+          }
         },
       },
     }),

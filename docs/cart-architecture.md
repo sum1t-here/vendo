@@ -13,12 +13,12 @@ The cart in Vendo is built with Zustand + `persist` middleware. It lives in loca
 
 ## Stack
 
-| Layer | Tool | Reason |
-|---|---|---|
-| Client state | Zustand | Minimal boilerplate, no re-render issues |
-| Persistence | Zustand `persist` | Auto localStorage sync, zero setup |
-| Server sync | Payload CMS REST API | Cart collection in PostgreSQL |
-| Type safety | TypeScript | Catch type mismatches at compile time |
+| Layer        | Tool                 | Reason                                   |
+| ------------ | -------------------- | ---------------------------------------- |
+| Client state | Zustand              | Minimal boilerplate, no re-render issues |
+| Persistence  | Zustand `persist`    | Auto localStorage sync, zero setup       |
+| Server sync  | Payload CMS REST API | Cart collection in PostgreSQL            |
+| Type safety  | TypeScript           | Catch type mismatches at compile time    |
 
 ---
 
@@ -31,11 +31,11 @@ Zustand store (in memory)
       ↓
 persist middleware → localStorage (survives refresh)
       ↓
-syncToServer() → POST /api/cart-sync (survives logout)
+syncToServer() → POST /api/cart (survives logout)
       ↓
 User logs out → clearCart() → localStorage cleared
       ↓
-User logs in → GET /api/cart-sync → restore to Zustand
+User logs in → GET /api/cart → restore to Zustand
 ```
 
 ---
@@ -44,16 +44,16 @@ User logs in → GET /api/cart-sync → restore to Zustand
 
 ```ts
 interface CartItem {
-  id: number           // Payload product ID
-  name: string         // snapshot at time of add
-  price: number        // snapshot — re-validated at checkout
-  image: string        // Cloudinary URL
-  slug: string         // for linking back to product
-  quantity: number
-  stock: number        // product level stock
-  variantId?: string   // Payload variant ID (string, not number)
-  variantValue?: string // e.g. "M", "Red"
-  variantStock?: number // variant level stock
+  id: number; // Payload product ID
+  name: string; // snapshot at time of add
+  price: number; // snapshot — re-validated at checkout
+  image: string; // Cloudinary URL
+  slug: string; // for linking back to product
+  quantity: number;
+  stock: number; // product level stock
+  variantId?: string; // Payload variant ID (string, not number)
+  variantValue?: string; // e.g. "M", "Red"
+  variantStock?: number; // variant level stock
 }
 ```
 
@@ -63,12 +63,12 @@ interface CartItem {
 
 ## Store Actions
 
-| Action | Syncs to server | Debounced |
-|---|---|---|
-| `addToCart` | Yes — immediately | No |
-| `removeFromCart` | Yes — immediately | No |
-| `updateCartItemQuantity` | Yes | Yes — 1s |
-| `clearCart` | No | — |
+| Action                   | Syncs to server   | Debounced |
+| ------------------------ | ----------------- | --------- |
+| `addToCart`              | Yes — immediately | No        |
+| `removeFromCart`         | Yes — immediately | No        |
+| `updateCartItemQuantity` | Yes               | Yes — 1s  |
+| `clearCart`              | No                | —         |
 
 ---
 
@@ -77,9 +77,9 @@ interface CartItem {
 ### The `subscribe` approach
 
 ```ts
-useCartStore.subscribe((state) => {
-  setTimeout(() => syncToServer(state.items), 1000)
-})
+useCartStore.subscribe(state => {
+  setTimeout(() => syncToServer(state.items), 1000);
+});
 ```
 
 Simple one-liner. Automatically fires on every state change.
@@ -103,18 +103,18 @@ User logs in → restores [] ← cart is gone
 You can work around this with a flag:
 
 ```ts
-let isClearingCart = false
+let isClearingCart = false;
 
 clearCart: () => {
-  isClearingCart = true
-  set({ items: [] })
-  setTimeout(() => isClearingCart = false, 100)
-}
+  isClearingCart = true;
+  set({ items: [] });
+  setTimeout(() => (isClearingCart = false), 100);
+};
 
-useCartStore.subscribe((state) => {
-  if (isClearingCart) return
+useCartStore.subscribe(state => {
+  if (isClearingCart) return;
   // ...sync
-})
+});
 ```
 
 But now you have a mutable flag outside the store, a `setTimeout` to reset it, and a race condition if `subscribe` fires within those 100ms. The workaround is messier than the original problem.
@@ -160,15 +160,15 @@ Each action decides its own sync strategy. No flags, no race conditions, no surp
 
 ### Comparison
 
-| | `subscribe` | Per-action |
-|---|---|---|
-| Code simplicity | One liner | More verbose |
+|                     | `subscribe`           | Per-action         |
+| ------------------- | --------------------- | ------------------ |
+| Code simplicity     | One liner             | More verbose       |
 | `clearCart` problem | Needs workaround flag | Solved by omission |
-| Add to cart delay | 1s | Immediate |
-| Remove delay | 1s | Immediate |
-| Quantity change | 1s | 1s (debounced) |
-| Per-action control | Hard | Native |
-| Race conditions | Possible | None |
+| Add to cart delay   | 1s                    | Immediate          |
+| Remove delay        | 1s                    | Immediate          |
+| Quantity change     | 1s                    | 1s (debounced)     |
+| Per-action control  | Hard                  | Native             |
+| Race conditions     | Possible              | None               |
 
 ---
 
@@ -179,15 +179,15 @@ Each action decides its own sync strategy. No flags, no race conditions, no surp
 Prevents adding more than available stock to the cart:
 
 ```ts
-addToCart: (item) => {
-  const existing = get().items.find(/* match */)
+addToCart: item => {
+  const existing = get().items.find(/* match */);
   if (existing) {
-    const maxStock = item.variantStock ?? item.stock
+    const maxStock = item.variantStock ?? item.stock;
     if (existing.quantity >= maxStock) {
-      throw new Error(`Only ${maxStock} items available`)
+      throw new Error(`Only ${maxStock} items available`);
     }
   }
-}
+};
 ```
 
 This gives instant feedback without a server round-trip.
@@ -249,7 +249,7 @@ No sync on logout — the server already has the latest state from the last cart
 ```
 User logs in successfully
       ↓
-GET /api/cart-sync → { items: [...] }
+GET /api/cart → { items: [...] }
       ↓
 useCartStore.setState({ items })
       ↓
