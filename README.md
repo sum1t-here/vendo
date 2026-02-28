@@ -30,8 +30,16 @@
   <img src="https://img.shields.io/badge/Cloudinary-000000?style=for-the-badge&logo=cloudinary&logoColor=white" />
   <img src="https://img.shields.io/badge/Resend-000000?style=for-the-badge&logo=resend&logoColor=white" />
   <img src="https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white" />
+  <img src="https://img.shields.io/badge/Prometheus-E6522C?style=for-the-badge&logo=prometheus&logoColor=white" />
+  <img src="https://img.shields.io/badge/Grafana-F05A28?style=for-the-badge&logo=grafana&logoColor=white" />
+  <img src="https://img.shields.io/badge/Redis-DC382C?style=for-the-badge&logo=redis&logoColor=white" />
+  <img src="https://img.shields.io/badge/RabbitMQ-FF6600?style=for-the-badge&logo=rabbitmq&logoColor=white" />
+  <img src="https://img.shields.io/badge/Vitest-64B939?style=for-the-badge&logo=vitest&logoColor=white" />
+  <img src="https://img.shields.io/badge/Drizzle_ORM-000000?style=for-the-badge&logo=drizzleorm&logoColor=white" />
+  <img src="https://img.shields.io/badge/Playwright-000000?style=for-the-badge&logo=playwright&logoColor=white" />
+  <img src="https://img.shields.io/badge/ESLint-4B32C3?style=for-the-badge&logo=eslint&logoColor=white" />
+  <img src="https://img.shields.io/badge/Prettier-F7B93E?style=for-the-badge&logo=prettier&logoColor=black" />
 </p>
-
 ---
 
 ## ⚠️ Known Issues & Warnings
@@ -242,19 +250,10 @@ bun run build
 ```
 
 ---
+## Documentation
 
-## Roadmap
-
-- [x] Project setup — Next.js 15 + Payload CMS 3 + PostgreSQL
-- [x] Shadcn UI + Tailwind CSS 4 + Neobrutalism design system
-- [x] Dark mode with next-themes
-- [x] Collections — Users, Products, Categories, Orders, Media
-- [x] RBAC — admin and customer roles
-- [x] Storefront — product listing and detail pages
-- [x] Cart — Zustand with SSR-safe persistence
-- [x] Stripe checkout + webhook order creation
-- [x] Protected routes via middleware
-- [x] Deploy to Vercel
+- [Webhook Architecture](docs/webhook-architecture.md)
+- [Cart Architecture](docs/cart-architecture.md)
 
 ---
 

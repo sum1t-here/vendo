@@ -1,5 +1,10 @@
 # Cart Architecture — Vendo
 
+Version: v1
+Status: Active
+Last Updated: 28/02/2026
+Related Commit: [14ab5a39](https://github.com/sum1t-here/vendo/commit/14ab5a39ac7623def01b55fd662123d68778e9c0)
+
 ## Overview
 
 The cart in Vendo is built with Zustand + `persist` middleware. It lives in localStorage so it survives page refreshes, and syncs to the server so it survives logout/login cycles.
