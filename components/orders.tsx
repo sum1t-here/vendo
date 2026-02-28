@@ -36,6 +36,8 @@ export default function Orders({ orders }: { orders: Order[] }) {
     refunded:    'bg-gray-100 text-gray-800 border-gray-800',
   }
 
+  console.log(orders);
+
   return (
     <div className="pt-7 px-7 md:px-14 min-h-screen">
 

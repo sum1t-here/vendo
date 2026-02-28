@@ -53,7 +53,7 @@ export async function POST(req: Request) {
       }
 
       // validate price and variant price
-      let availableStock: number;
+      let availableStock: number = 0;
       let unitPrice = product.price;
 
       if (cartItem.variantId) {
@@ -65,9 +65,6 @@ export async function POST(req: Request) {
         // update the stock and price to variant stock and price
         availableStock = variant.stock ?? 0;
         unitPrice = variant.price ?? product.price;
-      } else {
-        // it will not come here since most of the products will have variants
-        availableStock = product.stock ?? 0;
       }
 
       // check if the stock is enough

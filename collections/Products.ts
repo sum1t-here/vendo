@@ -83,16 +83,6 @@ export const Products: CollectionConfig = {
       },
     },
     {
-      name: 'stock',
-      type: 'number',
-      min: 0,
-      // required: true,
-      admin: {
-        position: 'sidebar',
-        description: 'Number of items available in stock. Ignore this if you have variants.',
-      },
-    },
-    {
       name: 'category',
       type: 'relationship',
       relationTo: 'categories',

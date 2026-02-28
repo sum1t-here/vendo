@@ -112,15 +112,6 @@ export default buildConfig({
                   variants: updatedVariants,
                 },
               });
-            } else {
-              await payload.update({
-                collection: 'products',
-                id: product.id,
-                data: {
-                  // item.quantity : 0 as quantity:any
-                  stock: Math.max(0, (product?.stock ?? 0) - item.quantity),
-                },
-              });
             }
           }
 
@@ -128,6 +119,16 @@ export default buildConfig({
             console.error('No userId in session metadata');
             return;
           }
+
+          const user = await payload.findByID({
+            collection: 'users',
+            id: Number(userId),
+          });
+
+          const street = user.address?.street;
+          const city = user.address?.city;
+          const state = user.address?.state;
+          const zip = user.address?.zip;
 
           // create order
           const order = await payload.create({
@@ -146,26 +147,16 @@ export default buildConfig({
               total: (session.amount_total ?? 0) / 100,
               status: 'paid',
               stripeSessionId: session.id,
-              shippingAddress: session.shipping_details?.address
-                ? {
-                    name: session.shipping_details?.name || session.customer_details?.name || '',
-                    address1: session.shipping_details.address.line1 || '',
-                    address2: session.shipping_details.address.line2 || '',
-                    city: session.shipping_details.address.city || '',
-                    state: session.shipping_details.address.state || '',
-                    zip: session.shipping_details.address.postal_code || '',
-                    country: session.shipping_details.address.country || '',
-                  }
-                : undefined,
+              shippingAddress: {
+                address1: street,
+                city,
+                state,
+                zip,
+              },
             },
           });
 
           // send mail
-          if (userId) {
-            const user = await payload.findByID({
-              collection: 'users',
-              id: Number(userId),
-            });
 
             if (user?.email) {
               try {
@@ -193,7 +184,6 @@ export default buildConfig({
                 console.error('Failed to send email:', error);
               }
             }
-          }
         },
       },
     }),

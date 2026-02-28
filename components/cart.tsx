@@ -76,7 +76,7 @@ export default function Cart({ user }: CartProps) {
     }
 
     if (session?.url) {
-      window.location.href = session.url; // ← session.url not url
+      window.location.href = session.url;
     }
   };
 

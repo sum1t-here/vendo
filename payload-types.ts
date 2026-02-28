@@ -204,10 +204,6 @@ export interface Product {
    */
   comparePrice?: number | null;
   /**
-   * Number of items available in stock. Ignore this if you have variants.
-   */
-  stock?: number | null;
-  /**
    * Category of the product
    */
   category?: (number | null) | Category;
@@ -549,7 +545,6 @@ export interface ProductsSelect<T extends boolean = true> {
   description?: T;
   price?: T;
   comparePrice?: T;
-  stock?: T;
   category?: T;
   image?:
     | T

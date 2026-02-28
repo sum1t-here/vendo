@@ -1,6 +1,7 @@
 import HeaderLabel from '@/components/header-label';
 import Orders from '@/components/orders';
 import { getUser } from '@/lib/getUser';
+import { redirect } from 'next/navigation';
 
 export default async function OrdersPage() {
     const {payload, user} = await getUser();
@@ -16,11 +17,7 @@ export default async function OrdersPage() {
     });
 
     if(!user) {
-        return <div>Unauthorized</div>;
-    }
-
-    if(!orders) {
-        return <div>No orders found</div>;
+       redirect('/login');
     }
 
   return (

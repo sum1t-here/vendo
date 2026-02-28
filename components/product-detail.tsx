@@ -165,9 +165,6 @@ export default function ProductDetail({ product }: { product: Product }) {
             ))}
 
           {/* Stock */}
-          {/* <p className={`text-sm font-bold ${product.stock === 0 ? 'text-red-500' : 'text-green-600'}`}>
-            {product.stock === 0 ? 'Out of stock' : `${product.stock} in stock`}
-          </p> */}
           <p
             className={`text-sm font-bold ${isInStock(product, selectedVariant?.id ?? undefined) ? 'text-green-600' : 'text-red-500'}`}
           >
