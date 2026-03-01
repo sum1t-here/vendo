@@ -1,4 +1,4 @@
-import { toast } from 'sonner';
+import { debouncedSyncToServer, syncToServer } from '@/lib/sync-cart';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
@@ -24,30 +24,14 @@ interface cartStore {
   totalPrice: () => number;
 }
 
-const syncToServer = async (items: CartItem[]) => {
-  await fetch('/api/cart', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ items }),
-  });
-};
-
-// debounced sync to server
-let syncTimeout: ReturnType<typeof setTimeout> | null = null;
-const debouncedSyncToServer = (items: CartItem[]) => {
-  if (syncTimeout) {
-    clearTimeout(syncTimeout);
-  }
-  syncTimeout = setTimeout(() => {
-    syncToServer(items);
-  }, 1000);
-};
-
 export const useCartStore = create<cartStore>()(
   persist(
     (set, get) => ({
       items: [],
       addToCart: (item: CartItem) => {
+        if (!item.variantId) {
+          throw new Error(`Please select a variant for ${item.name}`);
+        }
         // check if item is already in cart
         const existingItem = get().items.find(
           cartItem => cartItem.id === item.id && cartItem.variantId === item.variantId
@@ -56,8 +40,9 @@ export const useCartStore = create<cartStore>()(
           // check if adding more items will exceed the stock
           const maxStock = existingItem.variantStock ?? 0;
           if (existingItem.quantity >= maxStock) {
-            toast.error(`Only ${maxStock} items are available for ${existingItem.name} (${existingItem.variantValue})`);
-            return;
+            throw new Error(
+              `Only ${maxStock} items are available for ${existingItem.name} (${existingItem.variantValue})`
+            );
           }
           set(state => ({
             items: state.items.map(cartItem =>
@@ -91,8 +76,9 @@ export const useCartStore = create<cartStore>()(
         const existingItem = get().items.find(cartItem => cartItem.id === id && cartItem.variantId === variantId);
         const maxStock = existingItem?.variantStock ?? 0;
         if (quantity > maxStock) {
-          toast.error(`Only ${maxStock} items are available for ${existingItem?.name} (${existingItem?.variantValue})`);
-          return;
+          throw new Error(
+            `Only ${maxStock} items are available for ${existingItem?.name} (${existingItem?.variantValue})`
+          );
         }
         // if quantity is 0 or less, remove the item from cart
         if (quantity <= 0) {
