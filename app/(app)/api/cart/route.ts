@@ -1,5 +1,7 @@
 import { getUser } from '@/lib/getUser';
+import { cartSchema } from '@/schemas/api/cart.schema';
 import { NextResponse } from 'next/server';
+import z from 'zod';
 
 export async function GET() {
   const { payload, user } = await getUser();
@@ -22,9 +24,16 @@ export async function POST(req: Request) {
   if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
-  const { items } = await req.json();
-  // console.log(items);
-  // console.log(user.id);
+  const body = await req.json();
+
+  const parsed = cartSchema.safeParse(body);
+
+  if (!parsed.success) {
+    return NextResponse.json({ error: z.prettifyError(parsed.error) }, { status: 400 });
+  }
+
+  const { items } = parsed.data;
+
   const { docs } = await payload.find({
     collection: 'cart',
     where: {

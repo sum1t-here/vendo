@@ -15,6 +15,9 @@ import { stripePlugin } from '@payloadcms/plugin-stripe';
 import OrderConfirmation from './components/email/order-confirmation';
 import { render } from '@react-email/components';
 import { Product } from './payload-types';
+import { env } from './schemas/env.schema';
+import { console } from 'inspector';
+import { checkoutMetadataSchema } from './schemas/stripe-webhook';
 
 type Variants = NonNullable<Product['variants']>[number];
 
@@ -28,19 +31,19 @@ export default buildConfig({
   collections: [Users, Products, Categories, Media, Orders, Cart],
 
   // secret
-  secret: process.env.PAYLOAD_SECRET!,
+  secret: env.PAYLOAD_SECRET,
 
   // database
   db: postgresAdapter({
     pool: {
-      connectionString: process.env.DATABASE_URL!,
+      connectionString: env.DATABASE_URL,
     },
   }),
 
   // email
   email: resendAdapter({
-    apiKey: process.env.RESEND_API_KEY!,
-    defaultFromAddress: process.env.RESEND_FROM_ADDRESS!,
+    apiKey: env.RESEND_API_KEY,
+    defaultFromAddress: env.RESEND_FROM_ADDRESS,
     defaultFromName: 'Vendo',
   }),
 
@@ -61,8 +64,8 @@ export default buildConfig({
       },
     }),
     stripePlugin({
-      stripeSecretKey: process.env.STRIPE_SECRET_KEY!,
-      stripeWebhooksEndpointSecret: process.env.STRIPE_WEBHOOKS_ENDPOINT_SECRET!,
+      stripeSecretKey: env.STRIPE_SECRET_KEY,
+      stripeWebhooksEndpointSecret: env.STRIPE_WEBHOOKS_ENDPOINT_SECRET,
       webhooks: {
         'checkout.session.completed': async ({ payload, event }) => {
           const session = event.data.object;
@@ -79,8 +82,21 @@ export default buildConfig({
             return;
           }
 
-          const items = JSON.parse(session.metadata.items);
-          const userId = session.metadata.userId;
+          if (!session.metadata?.items || !session.metadata?.userId) {
+            console.error('Missing metadata');
+            return;
+          }
+
+          let parsedMetadata;
+
+          try {
+            parsedMetadata = checkoutMetadataSchema.parse(session.metadata);
+          } catch (error) {
+            console.error('Invalid metadata', error);
+            return;
+          }
+
+          const { items, userId } = parsedMetadata;
 
           // deduct stock
           for (const item of items) {
@@ -101,8 +117,8 @@ export default buildConfig({
             }
 
             if (item.variantId) {
-              const updatedVariants = product?.variants?.map(
-                (v: Variants) => (v.id === item.variantId ? { ...v, stock: Math.max(0, (v.stock ?? 0) - item.quantity) } : v)
+              const updatedVariants = product?.variants?.map((v: Variants) =>
+                v.id === item.variantId ? { ...v, stock: Math.max(0, (v.stock ?? 0) - item.quantity) } : v
               );
 
               await payload.update({
@@ -135,13 +151,12 @@ export default buildConfig({
             collection: 'orders',
             data: {
               customer: Number(userId),
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              items: items.map((item: any) => ({
+              items: items.map(item => ({
                 product: item.id,
                 productName: item.name,
                 price: item.price,
                 quantity: item.quantity,
-                variantId: item.variantId ?? null,
+                variantId: item.variantId ? String(item.variantId) : null,
                 variantValue: item.variantValue ?? null,
               })),
               total: (session.amount_total ?? 0) / 100,
@@ -157,10 +172,9 @@ export default buildConfig({
           });
 
           // send mail
-
-            if (user?.email) {
-              try {
-                const emailHtml = await render(
+          if (user?.email) {
+            try {
+              const emailHtml = await render(
                 OrderConfirmation({
                   customerName: user.name,
                   orderId: order?.id,
@@ -176,14 +190,15 @@ export default buildConfig({
                 })
               );
               await payload.sendEmail({
-                to:  process.env.CONTACT_RECEIVER_EMAIL!,
+                // TODO: change to user email
+                to: env.CONTACT_RECEIVER_EMAIL,
                 subject: `Order Confirmation - #${order.id}`,
                 html: emailHtml,
               });
-              } catch (error) {
-                console.error('Failed to send email:', error);
-              }
+            } catch (error) {
+              console.error('Failed to send email:', error);
             }
+          }
         },
       },
     }),

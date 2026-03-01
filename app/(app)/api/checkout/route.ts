@@ -4,12 +4,23 @@ import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 import { getPayload } from 'payload';
 import { Product } from '@/payload-types';
+import { env } from '@/schemas/env.schema';
+import { checkoutSchema } from '@/schemas/api/checkout.schema';
+import z from 'zod';
 
 type Variants = NonNullable<Product['variants']>[number];
 
 export async function POST(req: Request) {
   try {
-    const { items } = await req.json();
+    const body = await req.json();
+
+    const parsed = checkoutSchema.safeParse(body);
+
+    if (!parsed.success) {
+      return NextResponse.json({ error: z.prettifyError(parsed.error) }, { status: 400 });
+    }
+
+    const { items } = parsed.data;
 
     if (!items || items.length === 0) {
       return NextResponse.json({ error: 'No items in cart' }, { status: 400 });
@@ -119,8 +130,8 @@ export async function POST(req: Request) {
         },
         quantity: item.quantity,
       })),
-      success_url: `${process.env.NEXT_PUBLIC_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_URL}/cart`,
+      success_url: `${env.NEXT_PUBLIC_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${env.NEXT_PUBLIC_URL}/cart`,
     });
 
     return NextResponse.json({ session });

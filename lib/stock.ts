@@ -1,4 +1,4 @@
-import { Product } from "@/payload-types";
+import { Product } from '@/payload-types';
 
 type Variant = NonNullable<Product['variants']>[number];
 
@@ -11,8 +11,7 @@ export function getProductStock(product: Product) {
   return product.stock ?? 0;
 }
 
-export function isInStock(product: Product, variantId?: string) : boolean {
-
+export function isInStock(product: Product, variantId?: string): boolean {
   // if variantId is provided, check variant stock
   if (variantId) {
     const variant = product.variants?.find((v: Variant) => v.id === variantId);

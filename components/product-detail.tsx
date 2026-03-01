@@ -21,11 +21,14 @@ export default function ProductDetail({ product }: { product: Product }) {
   const price = selectedVariant?.price ?? product.price;
 
   // Group variants by name (e.g. Size: [S, M, L], Color: [Red, Blue])
-  const variantGroups = product.variants?.reduce((acc: Record<string, ProductVariant[]>, variant: ProductVariant) => {
-    if (!acc[variant.name]) acc[variant.name] = [];
-    acc[variant.name].push(variant);
-    return acc;
-  }, {} as Record<string, ProductVariant[]>);
+  const variantGroups = product.variants?.reduce(
+    (acc: Record<string, ProductVariant[]>, variant: ProductVariant) => {
+      if (!acc[variant.name]) acc[variant.name] = [];
+      acc[variant.name].push(variant);
+      return acc;
+    },
+    {} as Record<string, ProductVariant[]>
+  );
 
   const handleAddToCart = () => {
     const itemInCart = cart.find(cartItem => cartItem.id === product.id && cartItem.variantId === selectedVariant?.id);
@@ -143,7 +146,7 @@ export default function ProductDetail({ product }: { product: Product }) {
               <div key={groupName}>
                 <p className="text-sm font-bold uppercase mb-2">{groupName}</p>
                 <div className="flex gap-2 flex-wrap">
-                  {variants.map((variant) => (
+                  {variants.map(variant => (
                     <button
                       key={variant.id}
                       onClick={() => setSelectedVariant(selectedVariant?.id === variant.id ? null : variant)}
@@ -168,7 +171,9 @@ export default function ProductDetail({ product }: { product: Product }) {
           <p
             className={`text-sm font-bold ${isInStock(product, selectedVariant?.id ?? undefined) ? 'text-green-600' : 'text-red-500'}`}
           >
-            {isInStock(product, selectedVariant?.id ?? undefined) ? `${getProductStock(product)} in stock` : 'Out of stock'}
+            {isInStock(product, selectedVariant?.id ?? undefined)
+              ? `${getProductStock(product)} in stock`
+              : 'Out of stock'}
           </p>
 
           {/* Add to cart */}
