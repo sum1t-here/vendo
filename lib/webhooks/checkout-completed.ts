@@ -75,9 +75,15 @@ export const checkoutSessionCompleted: StripeWebhookHandler = async ({ payload, 
     return;
   }
 
+  const userIdNum = Number(userId)
+if (isNaN(userIdNum)) {
+  console.error('Invalid userId — not a number:', userId)
+  return
+}
+
   const user = await payload.findByID({
     collection: 'users',
-    id: Number(userId),
+    id: userIdNum,
   });
 
   const street = user.address?.street;
