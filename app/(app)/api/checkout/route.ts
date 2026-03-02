@@ -65,18 +65,18 @@ export async function POST(req: Request) {
 
       const hasVariants = product.variants && product.variants.length > 0;
 
-      if(!hasVariants) {
-        return NextResponse.json({error: 'Product has no variants'}, {status: 400})
+      if (!hasVariants) {
+        return NextResponse.json({ error: 'Product has no variants' }, { status: 400 });
       }
 
-      if(!cartItem.variantId) {
-        return NextResponse.json({error: 'Variant id is required'}, {status: 400})
+      if (!cartItem.variantId) {
+        return NextResponse.json({ error: 'Variant id is required' }, { status: 400 });
       }
 
       const variant = product.variants?.find((v: Variants) => v.id === cartItem.variantId);
 
-      if(!variant) {
-        return NextResponse.json({error: 'Variant not found'}, {status: 404})
+      if (!variant) {
+        return NextResponse.json({ error: 'Variant not found' }, { status: 404 });
       }
 
       // validate price and variant price
@@ -84,11 +84,11 @@ export async function POST(req: Request) {
       const unitPrice = variant.price ?? product.price;
 
       if (cartItem.quantity > availableStock) {
-        return NextResponse.json({error: 'Product stock is not enough'}, {status: 400})
+        return NextResponse.json({ error: 'Product stock is not enough' }, { status: 400 });
       }
 
       if (cartItem.price !== unitPrice) {
-        return NextResponse.json({error: 'Product price has changed'}, {status: 400})
+        return NextResponse.json({ error: 'Product price has changed' }, { status: 400 });
       }
 
       validatedItems.push({

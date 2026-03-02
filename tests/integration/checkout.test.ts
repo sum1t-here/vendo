@@ -56,34 +56,36 @@ vi.mock('payload', async importOriginal => {
   };
 });
 
-describe('POST /api/checkout',  () => {
+describe('POST /api/checkout', () => {
   beforeEach(async () => {
-    vi.clearAllMocks()
+    vi.clearAllMocks();
 
     // restore default mock after reset
-  const { getPayload } = await import('payload')
-  vi.mocked(getPayload).mockResolvedValue({
-    auth: vi.fn().mockResolvedValue({ user: { id: 1 } }),
-    find: vi.fn().mockResolvedValue({
-      docs: [{
-        id: 1,
-        name: 'test-product',
-        price: 100,
-        status: 'published',
-        variants: [{ id: 1, name: 'test-variant', price: 100, stock: 10 }],
-      }],
-    }),
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } as any)
+    const { getPayload } = await import('payload');
+    vi.mocked(getPayload).mockResolvedValue({
+      auth: vi.fn().mockResolvedValue({ user: { id: 1 } }),
+      find: vi.fn().mockResolvedValue({
+        docs: [
+          {
+            id: 1,
+            name: 'test-product',
+            price: 100,
+            status: 'published',
+            variants: [{ id: 1, name: 'test-variant', price: 100, stock: 10 }],
+          },
+        ],
+      }),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any);
 
-  // restore stripe mock
-  const { stripe } = await import('@/lib/stripe')
-  vi.mocked(stripe.checkout.sessions.create).mockResolvedValue({
-    url: 'https://checkout.stripe.com/test',
-    id: 'test-session-id',
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } as any)
-  })
+    // restore stripe mock
+    const { stripe } = await import('@/lib/stripe');
+    vi.mocked(stripe.checkout.sessions.create).mockResolvedValue({
+      url: 'https://checkout.stripe.com/test',
+      id: 'test-session-id',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any);
+  });
 
   it('should return session', async () => {
     const { POST } = await import('@/app/(app)/api/checkout/route');
@@ -163,7 +165,7 @@ describe('POST /api/checkout',  () => {
           },
         ],
       }),
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any);
 
     const { POST } = await import('@/app/(app)/api/checkout/route');
@@ -196,7 +198,7 @@ describe('POST /api/checkout',  () => {
     expect(stripe.checkout.sessions.create).not.toHaveBeenCalled();
   });
 
-  it("should return error if variant not found", async () => {
+  it('should return error if variant not found', async () => {
     const { getPayload } = await import('payload');
 
     vi.mocked(getPayload).mockResolvedValueOnce({
@@ -222,7 +224,7 @@ describe('POST /api/checkout',  () => {
           },
         ],
       }),
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any);
 
     const { POST } = await import('@/app/(app)/api/checkout/route');
@@ -255,7 +257,7 @@ describe('POST /api/checkout',  () => {
     expect(stripe.checkout.sessions.create).not.toHaveBeenCalled();
   });
 
-  it("should return error if product not found", async () => {
+  it('should return error if product not found', async () => {
     const { getPayload } = await import('payload');
 
     vi.mocked(getPayload).mockResolvedValueOnce({
@@ -267,7 +269,7 @@ describe('POST /api/checkout',  () => {
       find: vi.fn().mockResolvedValue({
         docs: [],
       }),
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any);
 
     const { POST } = await import('@/app/(app)/api/checkout/route');
@@ -300,7 +302,7 @@ describe('POST /api/checkout',  () => {
     expect(stripe.checkout.sessions.create).not.toHaveBeenCalled();
   });
 
-  it("should return error if body is not valid", async () => {
+  it('should return error if body is not valid', async () => {
     const { stripe } = await import('@/lib/stripe');
     vi.mocked(stripe.checkout.sessions.create).mockRejectedValueOnce(new Error('Stripe error'));
     const { POST } = await import('@/app/(app)/api/checkout/route');
@@ -333,11 +335,11 @@ describe('POST /api/checkout',  () => {
     expect(stripe.checkout.sessions.create).toHaveBeenCalled();
   });
 
-  it("should return error if payload token not found", async () => {
+  it('should return error if payload token not found', async () => {
     const { getPayload } = await import('payload');
     vi.mocked(getPayload).mockResolvedValueOnce({
       auth: vi.fn().mockResolvedValue(null),
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any);
 
     const { POST } = await import('@/app/(app)/api/checkout/route');
@@ -368,9 +370,9 @@ describe('POST /api/checkout',  () => {
     expect(data).toHaveProperty('error');
     expect(data.error).toBe('No user found');
     expect(stripe.checkout.sessions.create).not.toHaveBeenCalled();
-  })
+  });
 
-  it("should return error if product has no variants", async () => {
+  it('should return error if product has no variants', async () => {
     const { getPayload } = await import('payload');
     vi.mocked(getPayload).mockResolvedValueOnce({
       auth: vi.fn().mockResolvedValue({
@@ -388,7 +390,7 @@ describe('POST /api/checkout',  () => {
           },
         ],
       }),
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any);
 
     const { POST } = await import('@/app/(app)/api/checkout/route');
@@ -419,9 +421,9 @@ describe('POST /api/checkout',  () => {
     expect(data).toHaveProperty('error');
     expect(data.error).toBe('Product has no variants');
     expect(stripe.checkout.sessions.create).not.toHaveBeenCalled();
-  })
+  });
 
-  it("should return error if cart item has no variant id", async () => {
+  it('should return error if cart item has no variant id', async () => {
     const { getPayload } = await import('payload');
     vi.mocked(getPayload).mockResolvedValueOnce({
       auth: vi.fn().mockResolvedValue({
@@ -446,7 +448,7 @@ describe('POST /api/checkout',  () => {
           },
         ],
       }),
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any);
 
     const { POST } = await import('@/app/(app)/api/checkout/route');
@@ -477,9 +479,9 @@ describe('POST /api/checkout',  () => {
     expect(data).toHaveProperty('error');
     expect(data.error).toContain('Invalid input');
     expect(stripe.checkout.sessions.create).not.toHaveBeenCalled();
-  })
+  });
 
-  it("should return error if cart item price and product variant price not match", async () => {
+  it('should return error if cart item price and product variant price not match', async () => {
     const { getPayload } = await import('payload');
     vi.mocked(getPayload).mockResolvedValueOnce({
       auth: vi.fn().mockResolvedValue({
@@ -504,7 +506,7 @@ describe('POST /api/checkout',  () => {
           },
         ],
       }),
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any);
 
     const { POST } = await import('@/app/(app)/api/checkout/route');
@@ -535,5 +537,5 @@ describe('POST /api/checkout',  () => {
     expect(data).toHaveProperty('error');
     expect(data.error).toContain('Product price has changed');
     expect(stripe.checkout.sessions.create).not.toHaveBeenCalled();
-  })
+  });
 });

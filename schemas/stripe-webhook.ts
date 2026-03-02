@@ -11,7 +11,18 @@ export const webhookItemSchema = z.object({
 
 export const checkoutMetadataSchema = z.object({
   userId: z.string().min(1),
-  items: z.array(webhookItemSchema).min(1),
+  items: z.string().transform((val, ctx) => {
+    try {
+      const parsed = JSON.parse(val);
+      return z.array(webhookItemSchema).parse(parsed);
+    } catch (error) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Invalid items',
+      });
+      return z.NEVER;
+    }
+  }),
 });
 
 export type WebhookItem = z.infer<typeof webhookItemSchema>;
