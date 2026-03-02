@@ -9,7 +9,6 @@ type Variants = NonNullable<Product['variants']>[number];
 
 export const checkoutSessionCompleted: StripeWebhookHandler = async ({ payload, event }) => {
   console.log('🔥 webhook fired');
-  console.log('req.user in webhook:', payload); // check if payload is valid
   const session = event.data.object;
 
   // prevent duplicate orders
@@ -93,6 +92,11 @@ export const checkoutSessionCompleted: StripeWebhookHandler = async ({ payload, 
   const city = user.address?.city;
   const state = user.address?.state;
   const zip = user.address?.zip;
+  console.log('user', user);
+  console.log('street', street);
+  console.log('city', city);
+  console.log('state', state);
+  console.log('zip', zip);
 
   let order;
   try {
@@ -123,6 +127,8 @@ export const checkoutSessionCompleted: StripeWebhookHandler = async ({ payload, 
     console.error('Failed to create order', error);
     throw error;
   }
+
+  console.log('order', order);
 
   // send mail
   if (user?.email) {
