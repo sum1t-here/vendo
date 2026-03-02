@@ -3,6 +3,7 @@ import { render } from '@react-email/components';
 import OrderConfirmation from '@/components/email/order-confirmation';
 import type { Product } from '@/payload-types';
 import { checkoutMetadataSchema } from '@/schemas/stripe-webhook';
+import { getUser } from '../getUser';
 
 type Variants = NonNullable<Product['variants']>[number];
 
@@ -70,26 +71,24 @@ export const checkoutSessionCompleted: StripeWebhookHandler = async ({ payload, 
     }
   }
 
-  if (!userId) {
-    console.error('No userId in session metadata');
+  // stripe in production sends user id as string "pm_1T6dQvARc3lkYUM3osyIm2fR"
+
+  const { user } = await getUser();
+
+  if (!user) {
+    console.error('User not found for id:', userId);
     return;
   }
 
-  const userIdNum = Number(userId)
-if (isNaN(userIdNum)) {
-  console.error('Invalid userId — not a number:', userId)
-  return
-}
-
-  const user = await payload.findByID({
+  const userFromPayload = await payload.findByID({
     collection: 'users',
-    id: userIdNum,
+    id: Number(user?.id),
   });
 
-  const street = user.address?.street;
-  const city = user.address?.city;
-  const state = user.address?.state;
-  const zip = user.address?.zip;
+  const street = userFromPayload.address?.street;
+  const city = userFromPayload.address?.city;
+  const state = userFromPayload.address?.state;
+  const zip = userFromPayload.address?.zip;
 
   // create order
   const order = await payload.create({
