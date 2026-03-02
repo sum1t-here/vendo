@@ -8,7 +8,6 @@ import { env } from '@/schemas/env.schema';
 type Variants = NonNullable<Product['variants']>[number];
 
 export const checkoutSessionCompleted: StripeWebhookHandler = async ({ payload, event }) => {
-  console.log('🔥 webhook fired');
   const session = event.data.object;
 
   // prevent duplicate orders
@@ -54,7 +53,7 @@ export const checkoutSessionCompleted: StripeWebhookHandler = async ({ payload, 
 
     if (!product) {
       console.error('Product not found for id:', item.id);
-      return;
+      throw new Error('Product not found for id: ' + item.id);
     }
 
     if (item.variantId) {
@@ -74,7 +73,7 @@ export const checkoutSessionCompleted: StripeWebhookHandler = async ({ payload, 
 
   if (!userId) {
     console.error('No userId in session metadata');
-    return;
+    throw new Error('No userId in session metadata');
   }
 
   let user;
@@ -85,18 +84,14 @@ export const checkoutSessionCompleted: StripeWebhookHandler = async ({ payload, 
     });
   } catch (error) {
     console.error('Failed to find user', error);
-    throw error;
+    throw new Error('Failed to find user');
   }
 
   const street = user.address?.street;
   const city = user.address?.city;
   const state = user.address?.state;
   const zip = user.address?.zip;
-  console.log('user', user);
-  console.log('street', street);
-  console.log('city', city);
-  console.log('state', state);
-  console.log('zip', zip);
+
 
   let order;
   try {
@@ -125,10 +120,8 @@ export const checkoutSessionCompleted: StripeWebhookHandler = async ({ payload, 
     });
   } catch (error) {
     console.error('Failed to create order', error);
-    throw error;
+    throw new Error('Failed to create order');
   }
-
-  console.log('order', order);
 
   // send mail
   if (user?.email) {
