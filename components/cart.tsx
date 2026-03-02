@@ -80,6 +80,21 @@ export default function Cart({ user }: CartProps) {
     }
   };
 
+  const handleUpdateCartItemQuantity = (id: number, quantity: number, variantId?: string) => {
+    if (quantity <= 0) {
+      handleRemoveItem(id, variantId);
+      return;
+    }
+    try {
+      updateCartItemQuantity(id, quantity, variantId);
+    } catch (error) {
+      console.error(error);
+      if (error instanceof Error) {
+        toast.error(error.message);
+      }
+    }
+  };
+
   return (
     <div className="pt-7 px-7 md:px-14 min-h-screen">
       <div className="flex items-center justify-center w-full mb-7">
@@ -121,14 +136,14 @@ export default function Cart({ user }: CartProps) {
                   <div className="flex items-center gap-2">
                     <div
                       className="cursor-pointer text-lg font-extrabold"
-                      onClick={() => updateCartItemQuantity(item.id, item.quantity - 1, item.variantId)}
+                      onClick={() => handleUpdateCartItemQuantity(item.id, item.quantity - 1, item.variantId)}
                     >
                       <MinusIcon className="w-4 h-4" />
                     </div>
                     {item.quantity}
                     <div
                       className="cursor-pointer text-lg font-extrabold"
-                      onClick={() => updateCartItemQuantity(item.id, item.quantity + 1, item.variantId)}
+                      onClick={() => handleUpdateCartItemQuantity(item.id, item.quantity + 1, item.variantId)}
                     >
                       <PlusIcon className="w-4 h-4" />
                     </div>
