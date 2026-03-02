@@ -7,6 +7,8 @@ import { checkoutMetadataSchema } from '@/schemas/stripe-webhook';
 type Variants = NonNullable<Product['variants']>[number];
 
 export const checkoutSessionCompleted: StripeWebhookHandler = async ({ payload, event }) => {
+  console.log('🔥 webhook fired');
+  console.log('req.user in webhook:', payload); // check if payload is valid
   const session = event.data.object;
 
   // prevent duplicate orders
