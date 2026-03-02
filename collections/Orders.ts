@@ -33,7 +33,10 @@ export const Orders: CollectionConfig = {
     },
     update: isAdmin,
     delete: () => false,
-    create: isAdmin,
+    create: ({ req }) => {
+      if (!req.user && req.headers.get('stripe-signature')) return true;
+      return req.user?.role === 'admin';
+    },
   },
   fields: [
     {

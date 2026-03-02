@@ -136,9 +136,6 @@ export async function POST(req: Request) {
       cancel_url: `${env.NEXT_PUBLIC_URL}/cart`,
     });
 
-    console.log('user object:', JSON.stringify(user.user))
-console.log('user id:', user.user?.id)
-
     return NextResponse.json({ session });
   } catch (error) {
     console.error(error);
