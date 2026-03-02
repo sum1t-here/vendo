@@ -3,6 +3,7 @@ import { render } from '@react-email/components';
 import OrderConfirmation from '@/components/email/order-confirmation';
 import type { Product } from '@/payload-types';
 import { checkoutMetadataSchema } from '@/schemas/stripe-webhook';
+import { env } from '@/schemas/env.schema';
 
 type Variants = NonNullable<Product['variants']>[number];
 
@@ -77,40 +78,51 @@ export const checkoutSessionCompleted: StripeWebhookHandler = async ({ payload, 
     return;
   }
 
-  const user = await payload.findByID({
-    collection: 'users',
-    id: Number(userId),
-  });
+  let user;
+  try {
+    user = await payload.findByID({
+      collection: 'users',
+      id: Number(userId),
+    });
+  } catch (error) {
+    console.error('Failed to find user', error);
+    throw error;
+  }
 
   const street = user.address?.street;
   const city = user.address?.city;
   const state = user.address?.state;
   const zip = user.address?.zip;
 
-  // create order
-  const order = await payload.create({
-    collection: 'orders',
-    data: {
-      customer: Number(userId),
-      items: items.map(item => ({
-        product: item.id,
-        productName: item.name,
-        price: item.price,
-        quantity: item.quantity,
-        variantId: item.variantId ? String(item.variantId) : null,
-        variantValue: item.variantValue ?? null,
-      })),
-      total: (session.amount_total ?? 0) / 100,
-      status: 'paid',
-      stripeSessionId: session.id,
-      shippingAddress: {
-        address1: street,
-        city,
-        state,
-        zip,
+  let order;
+  try {
+    order = await payload.create({
+      collection: 'orders',
+      data: {
+        customer: Number(userId),
+        items: items.map(item => ({
+          product: item.id,
+          productName: item.name,
+          price: item.price,
+          quantity: item.quantity,
+          variantId: item.variantId ? String(item.variantId) : null,
+          variantValue: item.variantValue ?? null,
+        })),
+        total: (session.amount_total ?? 0) / 100,
+        status: 'paid',
+        stripeSessionId: session.id,
+        shippingAddress: {
+          address1: street,
+          city,
+          state,
+          zip,
+        },
       },
-    },
-  });
+    });
+  } catch (error) {
+    console.error('Failed to create order', error);
+    throw error;
+  }
 
   // send mail
   if (user?.email) {
@@ -131,7 +143,7 @@ export const checkoutSessionCompleted: StripeWebhookHandler = async ({ payload, 
         })
       );
       await payload.sendEmail({
-        to: user.email,
+        to: env.CONTACT_RECEIVER_EMAIL,
         subject: `Order Confirmation - #${order.id}`,
         html: emailHtml,
       });
