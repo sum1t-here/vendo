@@ -20,15 +20,14 @@ export default function HomePage() {
         </div>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white flex flex-col justify-center items-center w-full">
           <h1 className="md:text-8xl text-[27px]">Summer Arrival of Outfit </h1>
-          <p className="md:text-xl text-[10px] mt-2 md:mt-6 font-light">
-            Discover quality fashion that reflects your style and makes{' '}
+          <p className="md:text-2xl text-[10px] mt-2 md:mt-6 font-semibold tracking-wider">
+            Discover quality fashion that reflects your style and makes
           </p>
-          <p className="md:text-xl text-[10px] font-light">everyday enjoyable</p>
+          <p className="md:text-2xl text-[10px] font-semibold tracking-wider">everyday enjoyable</p>
           <div className="mt-12">
             <Link href="/products">
               <Button className="text-xs md:text-base cursor-pointer" variant="neutral">
-                {' '}
-                EXPLORE PRODUCT{' '}
+                EXPLORE PRODUCT
                 <div>
                   <ArrowRightIcon />
                 </div>
@@ -56,7 +55,6 @@ export default function HomePage() {
         </div>
         <div className="w-full bg-[#FDEBD2] h-48 relative rounded-xl shadow-[6px_6px_0px_#000]">
           <Image src="/models/model2.png" alt="hero image" className="object-cover rounded-xl" priority fill />
-
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white flex justify-between items-center w-full p-7">
             <h1 className="text-[27px] md:text-4xl">
               Enchanting styles <br />
@@ -64,8 +62,7 @@ export default function HomePage() {
             </h1>
             <Link href="/products">
               <Button className="text-xs md:text-base cursor-pointer" variant="neutral">
-                {' '}
-                Shop Now{' '}
+                Shop Now
               </Button>
             </Link>
           </div>
