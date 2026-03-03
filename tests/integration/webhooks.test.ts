@@ -240,14 +240,16 @@ describe('checkoutSessionCompleted', () => {
       },
     };
 
-    await expect(checkoutSessionCompleted({
-      payload: mockPayload as any,
-      event: mockEvent as any,
-      config: {} as any,
-      req: {} as any,
-      stripe: {} as any,
-      pluginConfig: {} as any,
-    })).rejects.toThrow('Product not found for id: 1');
+    await expect(
+      checkoutSessionCompleted({
+        payload: mockPayload as any,
+        event: mockEvent as any,
+        config: {} as any,
+        req: {} as any,
+        stripe: {} as any,
+        pluginConfig: {} as any,
+      })
+    ).rejects.toThrow('Product not found for id: 1');
 
     expect(mockPayload.create).toHaveBeenCalledTimes(0);
     expect(mockPayload.sendEmail).toHaveBeenCalledTimes(0);

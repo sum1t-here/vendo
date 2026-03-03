@@ -92,7 +92,6 @@ export const checkoutSessionCompleted: StripeWebhookHandler = async ({ payload, 
   const state = user.address?.state;
   const zip = user.address?.zip;
 
-
   let order;
   try {
     order = await payload.create({

@@ -1,5 +1,3 @@
-'use client';
-
 import Link from 'next/link';
 import {
   DropdownMenu,
@@ -14,17 +12,18 @@ import {
 } from './ui/dropdown-menu';
 import { Menu, ShoppingCartIcon, User as UserIcon } from 'lucide-react';
 import { Button } from './ui/button';
-import { useRouter } from 'next/navigation';
-import { User } from '@/payload-types';
-import { useCartStore } from '@/store/cart';
 import { motion, useAnimation } from 'motion/react';
 import { useEffect } from 'react';
+import { User } from '@/payload-types';
 
-export default function HeaderPresenter({ user }: { user: User | null }) {
-  const router = useRouter();
+interface HeaderPresenterProps {
+  user: User | null;
+  totalItems: number;
+  handleLogout: () => void;
+}
+
+export default function HeaderPresenter({ user, totalItems, handleLogout }: HeaderPresenterProps) {
   const control = useAnimation();
-  const totalItems = useCartStore(state => state.totalItems());
-  const clearCart = useCartStore(state => state.clearCart);
 
   useEffect(() => {
     if (totalItems > 0) {
@@ -34,16 +33,6 @@ export default function HeaderPresenter({ user }: { user: User | null }) {
       });
     }
   }, [totalItems, control]);
-
-  const handleLogout = async () => {
-    await fetch('/api/users/logout', {
-      method: 'POST',
-    });
-    clearCart();
-    router.push('/');
-    router.refresh();
-  };
-
   return (
     <header className="bg-secondary-background w-full h-14 flex items-center justify-between px-4 md:px-14 shadow-[0_6px_0px_#000]">
       {/* Mobile Navigation */}

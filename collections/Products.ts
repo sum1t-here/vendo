@@ -11,6 +11,7 @@
  * - Customers view their orders with products
  */
 
+import { revalidatePath } from 'next/cache';
 import { isAdmin } from '../lib/access';
 import type { CollectionConfig } from 'payload';
 
@@ -181,4 +182,23 @@ export const Products: CollectionConfig = {
     },
   ],
   timestamps: true,
+
+  hooks: {
+    afterChange: [
+      async ({ doc }) => {
+        revalidatePath('/');
+        revalidatePath('/products');
+        revalidatePath(`/products/${doc.slug}`);
+        revalidatePath(`/category/${doc.category?.slug}`);
+      },
+    ],
+    afterDelete: [
+      async ({ doc }) => {
+        revalidatePath('/');
+        revalidatePath('/products');
+        revalidatePath(`/products/${doc.slug}`);
+        revalidatePath(`/category/${doc.category?.slug}`);
+      },
+    ],
+  },
 };

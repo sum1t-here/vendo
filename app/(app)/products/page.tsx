@@ -1,5 +1,14 @@
-import { getProducts } from '@/lib/payload';
+import { getProducts, getCategories } from '@/lib/payload';
 import ProductCard from '@/components/product-card';
+
+export const dynamicParams = true;
+
+export async function generateStaticParams() {
+  const categories = await getCategories();
+  return categories.map(category => ({ category: category.slug }));
+}
+
+export const revalidate = 3600;
 
 export default async function ProductsPage() {
   const products = await getProducts();
