@@ -10,6 +10,18 @@ jobs:
   ci:
     name: CI
     runs-on: ubuntu-latest
+    env:
+      PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+      CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+      CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
+      RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+      RESEND_FROM_ADDRESS: ${{ secrets.RESEND_FROM_ADDRESS }}
+      CONTACT_RECEIVER_EMAIL: ${{ secrets.CONTACT_RECEIVER_EMAIL }}
+      STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+      STRIPE_WEBHOOKS_ENDPOINT_SECRET: ${{ secrets.STRIPE_WEBHOOKS_ENDPOINT_SECRET }}
+      NEXT_PUBLIC_URL: ${{ secrets.NEXT_PUBLIC_URL }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -19,18 +31,6 @@ jobs:
 
       - name: Install dependencies
         run: bun install
-        env:
-          PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
-          CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
-          CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
-          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
-          RESEND_FROM_ADDRESS: ${{ secrets.RESEND_FROM_ADDRESS }}
-          CONTACT_RECEIVER_EMAIL: ${{ secrets.CONTACT_RECEIVER_EMAIL }}
-          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
-          STRIPE_WEBHOOKS_ENDPOINT_SECRET: ${{ secrets.STRIPE_WEBHOOKS_ENDPOINT_SECRET }}
-          NEXT_PUBLIC_URL: ${{ secrets.NEXT_PUBLIC_URL }}
 
       - name: Type check
         run: bun tsc --noEmit
