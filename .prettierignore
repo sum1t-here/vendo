@@ -3,3 +3,5 @@ yaml
 .env
 .env.local
 README.md
+app/(payload)/admin/importMap.js
+payload-types.ts
