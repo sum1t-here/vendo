@@ -3,6 +3,7 @@ import { useState } from 'react';
 import HeaderLabel from '@/components/header-label';
 import { ChevronDown } from 'lucide-react';
 import Link from 'next/link';
+import BreadcrumbNav from '@/components/breadcrumb-nav';
 
 const faqs = [
   {
@@ -89,6 +90,7 @@ function FaqItem({ q, a }: { q: string; a: string }) {
 export default function FaqPage() {
   return (
     <div className="px-4 md:px-14 py-12 min-h-screen">
+      <BreadcrumbNav />
       <div className="flex flex-col w-full justify-center items-center gap-2">
         <HeaderLabel text="FAQs" />
         <p className="text-muted-foreground mt-2 mb-10">Everything you need to know about Vendo.</p>

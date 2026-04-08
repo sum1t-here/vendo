@@ -1,5 +1,6 @@
 import { getProducts, getCategories } from '@/lib/payload';
 import ProductCard from '@/components/product-card';
+import BreadcrumbNav from '@/components/breadcrumb-nav';
 
 export const dynamicParams = true;
 
@@ -17,7 +18,10 @@ export default async function ProductsPage() {
     return <div>No products found</div>;
   }
   return (
-    <div className="pt-7 px-7 md:px-14 min-h-screen w-full">
+    <div>
+      <div className="py-12 px-4 md:px-14 w-full">
+        <BreadcrumbNav />
+      </div>
       <ul className="grid grid-cols-1 md:grid-cols-4 gap-2 place-items-center w-full">
         {products.map(product => (
           <ProductCard key={product.id} product={product} />

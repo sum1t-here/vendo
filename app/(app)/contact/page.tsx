@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import HeaderLabel from '@/components/header-label';
+import BreadcrumbNav from '@/components/breadcrumb-nav';
 
 export default function ContactPage() {
   const [form, setForm] = useState({ name: '', email: '', message: '' });
@@ -35,6 +36,7 @@ export default function ContactPage() {
 
   return (
     <div className="px-4 md:px-14 py-12 min-h-screen">
+      <BreadcrumbNav />
       <div className="flex flex-col w-full justify-center items-center gap-2">
         <HeaderLabel text="Contact Us" />
       </div>

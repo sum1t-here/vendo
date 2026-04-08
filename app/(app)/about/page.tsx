@@ -2,6 +2,7 @@
 import HeaderLabel from '@/components/header-label';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import BreadcrumbNav from '@/components/breadcrumb-nav';
 
 const values = [
   {
@@ -36,6 +37,9 @@ const stats = [
 export default function AboutPage() {
   return (
     <div className="min-h-screen">
+      <div className="pt-12 px-4 md:px-14 w-full">
+        <BreadcrumbNav />
+      </div>
       {/* Hero */}
       <section className="px-4 md:px-14 py-16 border-b-2 border-black flex flex-col w-full justify-center items-center gap-2">
         <HeaderLabel text="About Vendo" />

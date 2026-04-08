@@ -1,3 +1,4 @@
+import BreadcrumbNav from '@/components/breadcrumb-nav';
 import HeaderLabel from '@/components/header-label';
 import Orders from '@/components/orders';
 import { getUser } from '@/lib/getUser';
@@ -21,7 +22,10 @@ export default async function OrdersPage() {
   }
 
   return (
-    <div className="px-4 md:px-14 py-12 min-h-screen">
+    <div>
+      <div className="py-12 px-4 md:px-14 w-full">
+        <BreadcrumbNav />
+      </div>
       <div className="flex flex-col w-full justify-center items-center gap-2">
         <HeaderLabel text="Orders" />
       </div>

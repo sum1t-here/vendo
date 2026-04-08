@@ -4,9 +4,11 @@ import { useState } from 'react';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
 import { Label } from './ui/label';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import HeaderLabel from './header-label';
+import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbSeparator } from './ui/breadcrumb';
+import BreadcrumbNav from './breadcrumb-nav';
 
 export default function RegisterForm() {
   const [user, setUser] = useState({
@@ -18,6 +20,7 @@ export default function RegisterForm() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -54,6 +57,7 @@ export default function RegisterForm() {
   };
   return (
     <div className="flex flex-col justify-center items-center mt-[100px] gap-3">
+      <BreadcrumbNav />
       <HeaderLabel text="Register" />
       <form
         onSubmit={handleSubmit}
