@@ -264,7 +264,5 @@ Cart restored to last saved state
 
 ## V2 Improvements (Not in scope yet)
 
-- Guest cart — allow adding to cart without login
-- Cart merge — merge guest cart with server cart on login
 - Optimistic updates — show cart changes immediately, rollback on sync failure
 - Cart expiry — clear server cart after N days of inactivity
