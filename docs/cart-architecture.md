@@ -235,7 +235,9 @@ Last sync already saved to server (happened on last cart change)
       ↓
 clearCart() → localStorage: []
       ↓
-router.push('/') + router.refresh()
+router.refresh()
+      ↓
+router.push('/')
       ↓
 Server session cookie cleared
 ```

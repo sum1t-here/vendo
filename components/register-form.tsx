@@ -40,10 +40,10 @@ export default function RegisterForm() {
       });
       const data = await response.json();
       if (!response.ok) {
-        setError(data.message);
+        setError(data.errors[0].message);
       } else {
-        router.push('/login');
         router.refresh();
+        router.push('/login');
       }
     } catch (error) {
       console.error('Login error:', error);

@@ -46,8 +46,8 @@ export default function LoginForm() {
       if (serverItems.length > 0) {
         useCartStore.setState({ items: serverItems });
       }
-      router.push('/');
       router.refresh();
+      router.push('/');
     } catch (error) {
       console.error('Login error:', error);
       setError('An error occurred during login');
@@ -55,6 +55,75 @@ export default function LoginForm() {
       setLoading(false);
     }
   };
+
+  const handleAdminLogin = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const adminCreds = {
+        email: process.env.NEXT_PUBLIC_ADMIN_EMAIL || '',
+        password: process.env.NEXT_PUBLIC_ADMIN_PASSWORD || '',
+      };
+
+      setUser(adminCreds);
+
+      const response = await fetch('/api/users/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(adminCreds),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        setError(data.errors[0].message);
+        setLoading(false);
+        return;
+      }
+      router.refresh();
+      window.location.href = '/admin';
+    } catch (error) {
+      console.error('Admin login error:', error);
+      setError('An error occurred during admin login');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleTestUserLogin = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const testUserCreds = {
+        email: process.env.NEXT_PUBLIC_TEST_USER_MAIL || '',
+        password: process.env.NEXT_PUBLIC_TEST_USER_PASSWORD || '',
+      };
+
+      setUser(testUserCreds);
+
+      const response = await fetch('/api/users/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(testUserCreds),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        setError(data.errors[0].message);
+        setLoading(false);
+        return;
+      }
+      router.refresh();
+      router.push('/');
+    } catch (error) {
+      console.error('Test user login error:', error);
+      setError('An error occurred during test user login');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="flex flex-col justify-center items-center mt-[100px] gap-3">
       <HeaderLabel text="Login" />
@@ -91,6 +160,11 @@ export default function LoginForm() {
           </Link>
         </div>
       </form>
+      <i className="text-center text-sm text-muted-foreground">Only for testing purposes</i>
+      <div className="flex justify-center items-center gap-2">
+        <Button onClick={handleAdminLogin}>Login as Admin</Button>
+        <Button onClick={handleTestUserLogin}>Login as Test User</Button>
+      </div>
     </div>
   );
 }
