@@ -19,10 +19,10 @@ export default async function ProductsPage() {
   }
   return (
     <div>
-      <div className="py-12 px-4 md:px-14 w-full">
+      <div className="pt-12 px-4 md:px-14 w-full">
         <BreadcrumbNav />
       </div>
-      <ul className="grid grid-cols-1 md:grid-cols-4 gap-2 place-items-center w-full">
+      <ul className="pt-4 grid grid-cols-1 md:grid-cols-4 gap-2 place-items-center w-full">
         {products.map(product => (
           <ProductCard key={product.id} product={product} />
         ))}
